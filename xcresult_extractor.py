@@ -4,13 +4,13 @@
 #
 # Example usage:
 #   Help:
-#       python3 xcresult_to_console.py --help
+#       python3 xcresult_extractor.py --help
 #
 #   Extract the app logs (rather than the UI test runner logs):
-#       python3 xcresult_to_console.py --file YourTestApp.xcresult --bundleID com.yourapp.bundleid
+#       python3 xcresult_extractor.py --file YourTestApp.xcresult --bundleID com.yourapp.bundleid
 #
 #   Extract the test runner logs:
-#       python3 xcresult_to_console.py --file YourTestApp.xcresult
+#       python3 xcresult_extractor.py --file YourTestApp.xcresult
 
 import re
 import subprocess
@@ -25,13 +25,13 @@ def parseArgs():
 
     Example usage:
         Help:
-            python3 xcresult_to_console.py --help
+            python3 xcresult_extractor.py --help
 
         Extract the app logs (rather than the UI test runner logs):
-            python3 xcresult_to_console.py --file YourTestApp.xcresult --bundleID com.yourapp.bundleid
+            python3 xcresult_extractor.py --file YourTestApp.xcresult --bundleID com.yourapp.bundleid
 
         Extract the test runner logs:
-            python3 xcresult_to_console.py --file YourTestApp.xcresult
+            python3 xcresult_extractor.py --file YourTestApp.xcresult
     """
     parser = argparse.ArgumentParser(usage=usage)
     required = parser.add_argument_group('required arguments')
