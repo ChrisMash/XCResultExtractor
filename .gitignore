@@ -260,3 +260,11 @@ fastlane/test_output
 
 iOSInjectionProject/
 .DS_Store
+
+
+
+##########
+# CUSTOM #
+##########
+
+output.txt
