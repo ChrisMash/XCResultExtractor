@@ -47,6 +47,9 @@ def fileIDOfAppOutput(xcresultFilename, targetFilename):
     if len(graphOutput) == 0:
         raise Exception("Failed to extract graph")
     
+    if targetFilename not in graphOutput:
+        raise Exception(f"Graph doesn't include {targetFilename}")
+    
     # Example output
     #   + simctl_diagnostics (directory)
     #     * CASTree (file or dir)
