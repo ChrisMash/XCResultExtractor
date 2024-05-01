@@ -1,4 +1,4 @@
-# XCResultExtractor
+# [XCResultExtractor](https://github.com/ChrisMash/XCResultExtractor)
 
 A Python script to extract app console logs from an `.xcresult `, rather than just the 
 test runner's logs you usually see (but it can extract those too).

@@ -1,6 +1,7 @@
 # A script to extract app logs from an .xcresult file
 #
-# Inspired by https://stackoverflow.com/a/77989536/1751266
+# Repo: https://github.com/ChrisMash/XCResultExtractor
+# Inspiration: https://stackoverflow.com/a/77989536/1751266
 #
 # Example usage:
 #   Help:
