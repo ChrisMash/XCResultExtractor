@@ -10,9 +10,11 @@ import Foundation
 
 extension URL {
     
-    static func testsDir(sourceLocation: SourceLocation) -> URL {
+    static func testAsset(path: String,
+                          sourceLocation: SourceLocation = #_sourceLocation) -> URL {
         URL(fileURLWithPath: sourceLocation._filePath)
             .deletingLastPathComponent()
+            .appendingPathComponent("Assets/\(path)")
     }
     
 }

@@ -12,8 +12,7 @@ extension String {
     
     init(assetPath: String,
          sourceLocation: SourceLocation = #_sourceLocation) throws {
-        let path = URL.testsDir(sourceLocation: sourceLocation)
-            .appendingPathComponent("Assets/TestAppGraph.txt")
+        let path = URL.testAsset(path: assetPath, sourceLocation: sourceLocation)
         try self.init(contentsOf: path, encoding: .utf8)
     }
     
