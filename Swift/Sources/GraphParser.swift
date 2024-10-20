@@ -8,6 +8,7 @@
 import Foundation
 import RegexBuilder
 
+// TODO: Session.log useful? just combination of the two?
 struct GraphParser {
     
     struct Log {
@@ -105,7 +106,7 @@ struct GraphParser {
                 // which gives us an array of the file IDs we can index into
                 let ids = outputOfInterest[idxLastRef..<outputOfInterest.endIndex].components(separatedBy: "*")
                 // We extract the file ID from the correct chunk of the output
-                let fileIDLines = ids[refIdx].components(separatedBy: "\n")
+                let fileIDLines = ids[refIdx + 1].components(separatedBy: "\n")
                 guard fileIDLines.count > 1 else {
                     print("Error trying to find log ID line, skipping log")
                     continue
@@ -134,7 +135,7 @@ struct GraphParser {
                 
                 var name = cleanName(nameLine)
                 if let bundleID = extractBundleID(idx: refIdx, from: nameLines) {
-                    name += "-\(bundleID)" // TODO: bundle ID attached to the wrong one... or the bundle ID in the filename doesn't mean that's where it came from, but what was being tested?
+                    name += "-\(bundleID)"
                 }
                 
                 // De-duplicate names where multiple logs under the same session
