@@ -1,5 +1,5 @@
 //
-//  GraphParserTest.swift
+//  GraphParserTests.swift
 //  XCResultExtractor
 //
 //  Created by Chris Mash on 20/10/2024.
