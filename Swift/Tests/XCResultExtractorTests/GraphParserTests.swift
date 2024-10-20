@@ -35,12 +35,20 @@ struct GraphParserTests {
 
 }
 
+extension URL {
+    
+    static func testsDir(sourceLocation: SourceLocation = #_sourceLocation) -> URL {
+        URL(fileURLWithPath: sourceLocation._filePath)
+            .deletingLastPathComponent()
+    }
+    
+}
+
 extension String {
     
     init(assetPath: String,
          sourceLocation: SourceLocation = #_sourceLocation) throws {
-        let path = URL(fileURLWithPath: sourceLocation._filePath)
-            .deletingLastPathComponent()
+        let path = URL.testsDir()
             .appendingPathComponent("Assets/TestAppGraph.txt")
         try self.init(contentsOf: path, encoding: .utf8)
     }
