@@ -27,3 +27,15 @@ There's an example `.xcresult` in this repo (generated from the test app in the 
 * Run your UI tests
 * Select the Product -> Show build folder in finder menu option
 * Navigate to Logs/Tests/ and you should see your `.xcresult` file(s) there
+
+
+## Swift version
+
+A Swift version is in development to replace the Python script, once ready.
+
+You can try it out in the `Swift` folder by running:
+
+```shell
+swift run XCResultExtractor <path to .xcresult>
+```
+
