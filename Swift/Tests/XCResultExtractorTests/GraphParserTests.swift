@@ -11,7 +11,7 @@ import Testing
 struct GraphParserTests {
 
     @Test func testAppUITestGraphParsesCorrectly() async throws {
-        let graph = try String(assetPath: "TestAppGraph.txt")
+        let graph = try String(testAssetPath: "TestAppGraph.txt")
         let logs = try GraphParser.parseLogs(from: graph)
         #expect(logs.count == 2)
         #expect(logs[0].id == "0~0Hww-uYOGMF9bqddBMEah58BmmEwS_JfHxfWSLbpZt7Nli62Ewvd63aunSOpYrYCF4K8wADFPPOqQRw5qVRxHA==")

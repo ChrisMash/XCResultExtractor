@@ -1,0 +1,41 @@
+{
+  "configurations" : [
+    {
+      "id" : "C5768181-112A-4D52-A41B-C954E57BB1CD",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "\/Users\/chrismash\/Documents\/Dev\/GitHub\/XCResultExtractor\/TestApp.xcresult"
+      },
+      {
+        "argument" : "\/Users\/chrismash\/Documents\/Dev\/GitHub\/XCResultExtractor\/output",
+        "enabled" : false
+      },
+      {
+        "argument" : "\/Users\/chrismash\/Documents\/Dev\/GitHub\/XCResultExtractor\/MultiScheme.xcresult",
+        "enabled" : false
+      }
+    ],
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:",
+      "identifier" : "XCResultExtractor",
+      "name" : "XCResultExtractor"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "XCResultExtractorTests",
+        "name" : "XCResultExtractorTests"
+      }
+    }
+  ],
+  "version" : 1
+}

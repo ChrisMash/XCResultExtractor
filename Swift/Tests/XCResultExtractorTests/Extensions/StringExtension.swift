@@ -10,9 +10,9 @@ import Foundation
 
 extension String {
     
-    init(assetPath: String,
+    init(testAssetPath: String,
          sourceLocation: SourceLocation = #_sourceLocation) throws {
-        let path = URL.testAsset(path: assetPath, sourceLocation: sourceLocation)
+        let path = URL.testAsset(path: testAssetPath, sourceLocation: sourceLocation)
         try self.init(contentsOf: path, encoding: .utf8)
     }
     

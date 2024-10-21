@@ -7,7 +7,22 @@
 
 import Foundation
 
-struct XCResultTool {
+protocol XCResultToolInterface {
+    
+    func extractGraph(from path: String,
+                      outputPath: URL?,
+                      shell: ShellInterface,
+                      fileHandler: FileHandler) throws -> String
+    
+    func export(logs: [GraphParser.Log],
+                from xcResultPath: String,
+                to outputPathBase: String,
+                shell: ShellInterface,
+                fileHandler: FileHandler) throws
+    
+}
+
+struct XCResultTool: XCResultToolInterface {
     
     enum ExtractError: Error {
         case xcResultToolError(Error)
@@ -15,11 +30,13 @@ struct XCResultTool {
         case errorOutput(String)
     }
     
-    static func extractGraph(from path: String,
-                             outputPath: URL? = nil) throws -> String {
+    func extractGraph(from path: String,
+                      outputPath: URL? = nil,
+                      shell: ShellInterface,
+                      fileHandler: FileHandler) throws -> String {
         let graph: String
         do {
-            graph = try Shell.execute("xcrun xcresulttool graph --path \(path)/ --legacy")
+            graph = try shell.execute("xcrun xcresulttool graph --path \(path)/ --legacy")
         } catch {
             throw ExtractError.xcResultToolError(error)
         }
@@ -36,7 +53,10 @@ struct XCResultTool {
         if let outputPath {
             print("Writing graph to \(outputPath.path())")
             do {
-                try graph.write(to: outputPath, atomically: true, encoding: .utf8)
+                try fileHandler.write(string: graph,
+                                      to: outputPath,
+                                      atomically: true,
+                                      encoding: .utf8)
             } catch {
                 print("Error writing graph: \(error)")
             }
@@ -46,16 +66,25 @@ struct XCResultTool {
     }
     
     // Note: failures to export are only logged, no errors thrown
-    static func export(logs: [GraphParser.Log],
-                       from xcResultPath: String,
-                       to outputPathBase: String) {
+    func export(logs: [GraphParser.Log],
+                from xcResultPath: String,
+                to outputPathBase: String,
+                shell: ShellInterface,
+                fileHandler: FileHandler) throws {
+        let targetOutputPath = URL(fileURLWithPath: outputPathBase)
+        let tmpOutputPath = targetOutputPath.appending(path: "tmp",
+                                                       directoryHint: .isDirectory)
+        try fileHandler.createDirectory(atPath: tmpOutputPath.path(),
+                                        withIntermediateDirectories: true,
+                                        attributes: nil)
+        
         for log in logs {
-            let outputPath = URL(fileURLWithPath: outputPathBase)
+            let outputPath = tmpOutputPath
                 .appending(component: "\(log.name).txt")
                 .path(percentEncoded: true)
             let cmdOutput: String
             do {
-                cmdOutput = try Shell.execute("xcrun xcresulttool export --type file --path \(xcResultPath)/ --output-path \(outputPath) --id \(log.id) --legacy")
+                cmdOutput = try shell.execute("xcrun xcresulttool export --type file --path \(xcResultPath)/ --output-path \(outputPath) --id \(log.id) --legacy")
             } catch {
                 print("Error exporting log: \(error)")
                 continue
@@ -68,10 +97,21 @@ struct XCResultTool {
                 print("Exported \(outputPath)")
             }
         }
+        
+        do {
+            // TODO: fails if item already exists, so delete first
+            try fileHandler.moveItems(from: tmpOutputPath,
+                                      to: targetOutputPath)
+        } catch {
+            print("Error moving items from tmp folder \(tmpOutputPath) to \(targetOutputPath): \(error)")
+        }
+        
+        do {
+            try fileHandler.removeItem(at: tmpOutputPath)
+        } catch {
+            print("Error removing tmp folder \(tmpOutputPath): \(error)")
+        }
     }
-    
-    // MARK: Private
-    private init() {}
     
 }
 

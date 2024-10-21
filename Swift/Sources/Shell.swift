@@ -7,15 +7,20 @@
 
 import Foundation
 
-struct Shell {
+protocol ShellInterface {
+    
+    func execute(_ command: String) throws -> String
+    
+}
+
+struct Shell: ShellInterface {
     
     enum ShellError: Error {
         case outputParseFailed
     }
     
     // Based on https://stackoverflow.com/a/50035059/1751266
-    @discardableResult
-    static func execute(_ command: String) throws -> String {
+    func execute(_ command: String) throws -> String {
         let task = Process()
         let pipe = Pipe()
         
@@ -34,8 +39,5 @@ struct Shell {
         
         return output
     }
-    
-    // MARK: Private
-    private init() {}
     
 }

@@ -11,7 +11,8 @@ import Testing
 struct ShellTests {
 
     @Test func executeLSReturnsExpectedOutput() async throws {
-        let output = try Shell.execute("ls")
+        let sut = Shell()
+        let output = try sut.execute("ls")
         print(output)
         #expect(output.contains("XCResultExtractor.swiftmodule"))
     }
