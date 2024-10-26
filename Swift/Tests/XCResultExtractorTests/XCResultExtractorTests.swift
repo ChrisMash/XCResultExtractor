@@ -15,7 +15,7 @@ struct XCResultExtractorTests {
         let mockXCResultTool = MockXCResultTool()
         mockXCResultTool.extractGraphOut = try String(testAssetPath: "TestAppGraph.txt")
         let mockFileHandler = MockFileHandler()
-        try XCResultExtractorReal.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
+        try LogExtractor.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
                                               outputPath: nil,
                                               xcResultTool: mockXCResultTool,
                                               shell: MockShell(),

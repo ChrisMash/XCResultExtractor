@@ -22,7 +22,7 @@ struct GraphParser {
     }
     
     static func parseLogs(from graph: String) throws -> [Log] {
-        // Example graphOutput:
+        // Example graph (partial):
         //
         //  + simctl_diagnostics (directory)
         //    * CASTree (file or dir)
@@ -83,15 +83,14 @@ struct GraphParser {
         
         var logs: [Log] = []
         for match in matches {
-            let outputOfInterest = match.0
             // The regex matches from the first "Refs: " (not good enough at regex to avoid that),
             // so we find the last one and know that's the start of the detail we're interested in
-            // TODO: updating outputOfInterest to be everything after this idx would be more performant, as the following checks wouldn't need to scan over the earlier stuff we don't want
-            guard let idxLastRef = outputOfInterest.range(of: "Refs: ",
+            guard let idxLastRef = match.0.range(of: "Refs: ",
                                                           options: .backwards)?.lowerBound else {
                 print("Error trying to find start of logs, skipping target")
                 continue
             }
+            let outputOfInterest = match.0[idxLastRef...]
             // We get the substring from "Refs: " up to the std out filename
             let rangeOfLog = outputOfInterest.range(of: logFilename)
             guard let idxRefsEnd = outputOfInterest.range(of: "* ",
@@ -138,22 +137,8 @@ struct GraphParser {
                     name += "-\(bundleID)"
                 }
                 
-                // De-duplicate names where multiple logs under the same session
-                let numMatchingNames = logs.filter { existingName in
-                    let regex = Regex {
-                        existingName.name
-                        "-"
-                        OneOrMore(.digit)
-                    }
-                    
-                    return name.firstMatch(of: regex) != nil // TODO: want to test this would work if there were two identical names (though potentially unlikely)
-                }.count
-                if numMatchingNames > 0 {
-                    name += "-\(numMatchingNames + 1)"
-                }
-                
                 logs.append(GraphParser.Log(name: name,
-                                          id: String(fileID)))
+                                            id: String(fileID)))
             }
         }
         
@@ -193,7 +178,12 @@ struct GraphParser {
         // e.g. + Session-TestAppUITests-2024-04-25_185004-TPZle8.log (plainFile)
         //      + StandardOutputAndStandardError-com.chrismash.TestApp.txt (plainFile)  <----- bundle ID included
         //      + StandardOutputAndStandardError.txt (plainFile)                        <----- bundle ID not included
-        let line = lines[idx] // TODO: safety check
+        guard idx < lines.count else {
+            print("WARNING: requested bundle ID from line \(idx) when there are only \(lines.count)")
+            return nil
+        }
+        
+        let line = lines[idx]
         let regex = Regex {
             "+ \(logFilename)-"
             Capture {

@@ -12,7 +12,7 @@ import Foundation
 struct IntegrationTests {
 
     @Test func extractsLogsExtractsLogsFromTestAppXCResult() async throws {
-        try XCResultExtractorReal.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
+        try LogExtractor.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
                                               outputPath: nil)
         let fm = FileManager.default
         // Check tmp directory not present
@@ -42,7 +42,7 @@ struct IntegrationTests {
     
     @Test func extractsLogsExtractsLogsFromTestAppXCResultToOutputpath() async throws {
         let outputPath = URL.testAssetDir().appending(path: "test")
-        try XCResultExtractorReal.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
+        try LogExtractor.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
                                               outputPath: outputPath.path())
         let fm = FileManager.default
         // Check tmp directory not present
