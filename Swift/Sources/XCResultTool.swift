@@ -99,7 +99,6 @@ struct XCResultTool: XCResultToolInterface {
         }
         
         do {
-            // TODO: fails if item already exists, so delete first
             try fileHandler.moveItems(from: tmpOutputPath,
                                       to: targetOutputPath)
         } catch {

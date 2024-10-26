@@ -42,6 +42,7 @@ public struct DefaultFileHandler: FileHandler {
         }
     }
     
+    /// Moves files at the source directory to the destination directory. Replacing any duplicate files.
     public func moveItems(from source: URL,
                           to destination: URL) throws {
         let fm = FileManager.default
@@ -50,8 +51,14 @@ public struct DefaultFileHandler: FileHandler {
         }
         
         for case let fileURL as URL in enumerator {
+            let destinationFile = destination.appending(component: fileURL.lastPathComponent)
+            // Delete any duplicate file at the destination
+            if fm.fileExists(atPath: destinationFile.path()) {
+                try fm.removeItem(at: destinationFile)
+            }
+            // Move the file
             try fm.moveItem(at: fileURL,
-                            to: destination.appending(component: fileURL.lastPathComponent)) // TODO: just log errors and keep trying?
+                            to: destinationFile) // TODO: just log errors and keep trying?
         }
         
     }

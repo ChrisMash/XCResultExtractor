@@ -9,7 +9,6 @@ import Testing
 import Foundation
 @testable import XCResultExtractor
 
-// TODO: find a home?
 struct TestError: Error {}
 
 struct XCResultToolTests {
