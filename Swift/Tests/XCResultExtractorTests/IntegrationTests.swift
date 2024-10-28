@@ -113,8 +113,5 @@ struct IntegrationTests {
         
         try? fm.removeItem(atPath: outputPath.path())
     }
-    
-    // TODO: test dir creation throwing error?
-    // TODO: test logs?
 
 }

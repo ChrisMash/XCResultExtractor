@@ -68,24 +68,28 @@ struct GraphParser {
             let upperBound = idx < (casTreeRanges.count - 1) ? casTreeRanges[idx+1].lowerBound : graph.index(before: graph.endIndex)
             let casTree = graph[range.lowerBound...upperBound]
             if casTree.contains(logFilename) {
-                guard let idxLastRef = casTree.range(of: "Refs: ")?.lowerBound else { // TODO: rename, only one ref in the chunk
+                // TODO: all this code is probably optmisable
+                guard let idxRef = casTree.range(of: "Refs: ")?.lowerBound else {
                     print("Error trying to find start of logs, skipping target")
                     continue
                 }
                 
                 // We get the substring from "Refs: " up to the std out filename
-                let rangeOfLog = casTree.range(of: logFilename) // TODO: this is optional and has a force unwrap in next line
+                guard let rangeOfLog = casTree.range(of: logFilename) else {
+                    print("Error trying to find range of log, skipping target")
+                    continue
+                }
                 guard let idxRefsEnd = casTree.range(of: "* ",
-                                                     range: rangeOfLog!.lowerBound..<casTree.endIndex)?.lowerBound else {
+                                                     range: rangeOfLog.lowerBound..<casTree.endIndex)?.lowerBound else {
                     print("Error trying to find end of logs, skipping target")
                     continue
                 }
     
-                let refs = casTree[idxLastRef...idxRefsEnd].components(separatedBy: "+").dropFirst()
+                let refs = casTree[idxRef...idxRefsEnd].components(separatedBy: "+").dropFirst()
                 for (refIdx, ref) in refs.enumerated() where ref.contains(logFilename) {
                     // We then split on the "*" characters,
                     // which gives us an array of the file IDs we can index into
-                    let ids = casTree[idxLastRef..<casTree.endIndex].components(separatedBy: "*")
+                    let ids = casTree[idxRef..<casTree.endIndex].components(separatedBy: "*")
                     // We extract the file ID from the correct chunk of the output
                     let fileIDLines = ids[refIdx + 1].components(separatedBy: "\n")
                     guard fileIDLines.count > 1 else {

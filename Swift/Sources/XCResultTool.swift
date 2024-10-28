@@ -113,21 +113,3 @@ struct XCResultTool: XCResultToolInterface {
     }
     
 }
-
-extension XCResultTool.ExtractError: Equatable {
-    
-    static func == (lhs: XCResultTool.ExtractError,
-                    rhs: XCResultTool.ExtractError) -> Bool {
-        switch (lhs, rhs) {
-        case (let .xcResultToolError(lhsError), let .xcResultToolError(rhsError)):
-            return false // lhsError == rhsError TODO: might want this
-        case (.noOutput, .noOutput):
-            return true
-        case (let .errorOutput(lhsOutput), let .errorOutput(rhsOutput)):
-            return lhsOutput == rhsOutput
-        default:
-            return false
-        }
-    }
-    
-}
