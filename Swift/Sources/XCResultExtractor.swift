@@ -15,6 +15,7 @@ import ArgumentParser
 // TODO: consistent URL/String for paths?
 // TODO: rename TestApp to ExampleApp
 // TODO: check for TODOs in testapp
+// TODO: make sure readme explains how to get the different test Assets generated
 
 @main
 struct XCResultExtractor: ParsableCommand {

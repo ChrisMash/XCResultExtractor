@@ -79,7 +79,7 @@ struct IntegrationTests {
             #expect(fm.fileExists(atPath: path))
             let file = try String(contentsOf: URL(fileURLWithPath: path))
             #expect(file.contains(contents))
-            try? fm.removeItem(atPath: path)
+            try? fm.removeItem(atPath: path) // TODO: dangerous, might delete expected assets if they have a matching name?
         }
     }
     

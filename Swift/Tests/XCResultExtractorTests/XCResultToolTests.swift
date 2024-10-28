@@ -30,24 +30,18 @@ struct XCResultToolTests {
         let sut = XCResultTool()
         let mockShell = MockShell()
         mockShell.executeErrorOut = TestError()
-//        #expect(throws: XCResultTool.ExtractError.xcResultToolError(TestError())) {
-//            try sut.extractGraph(from: "some path",
-//                                 shell: mockShell,
-//                                 fileHandler: MockFileHandler())
-//        }
-        // Above doesn't match properly
-        do {
-            let _ = try sut.extractGraph(from: "some path",
+        
+        expectThrows {
+            try sut.extractGraph(from: "some path",
                                          shell: mockShell,
                                          fileHandler: MockFileHandler())
-            #expect(Bool(false), "Didn't expect to get here")
-        } catch {
-            if case let XCResultTool.ExtractError.xcResultToolError(rootError) = error {
+        } error: {
+            if case let XCResultTool.ExtractError.xcResultToolError(rootError) = $0 {
                 #expect(rootError is TestError)
             } else {
-                #expect(Bool(false), "Unexpected error: \(error)")
+                #expect(Bool(false), "Unexpected error: \($0)")
             }
-        } // TODO: wrap into a function?
+        }
     }
     
     // TODO: check graph gets written with file handler, if output path specified
@@ -75,5 +69,26 @@ struct XCResultToolTests {
     
     // TODO: test passing zero logs to export... what should happen? throw error straight away?
     // TODO: test export logs more
+    
+    // MARK: Private
+    private func expectThrows(_ closure: () throws -> Any,
+                              error errorMatcher: (Error) -> Void,
+                              sourceLocation: SourceLocation = #_sourceLocation) {
+//        #expect(throws: XCResultTool.ExtractError.xcResultToolError(TestError())) {
+//            try sut.extractGraph(from: "some path",
+//                                 shell: mockShell,
+//                                 fileHandler: MockFileHandler())
+//        }
+        
+        // Above doesn't match properly, so doing it this way!
+        do {
+            let _ = try closure()
+            #expect(Bool(false),
+                    "Expected error to be thrown, but wasn't",
+                    sourceLocation: sourceLocation)
+        } catch {
+            errorMatcher(error)
+        }
+    }
     
 }
