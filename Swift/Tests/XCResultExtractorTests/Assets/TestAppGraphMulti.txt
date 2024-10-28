@@ -1,0 +1,129 @@
+* ActionsInvocationRecord
+  - Id: 0~0izfaWrCrKbMrTYzQ71KvdSEKH1bLCx3uM9DzsFq1sLngbMSbvTebUseIP74lFRa_gzGuPoFZDyrdCQ8wYclaw==
+  - Size: 4586
+  - Refs: 7
+    * raw
+      - Id: 0~HFBfFmZfTZ3Na_u8Ulm3n9h2WRZHDLo7k-KQXK4JSXwxzVvkh4-XyXXYUO2KItl96s2kOxNCp6ziZCXkBNPTsw==
+      - Size: 3047
+    * ActionsInvocationMetadata
+      - Id: 0~OwLX6WC8yTI5N2NLieM10TXqwd0SLXjGDUgyA0__CChtssXJazQKqbN55n-sOawFiqqkrHTP7pNzYKXAWIn4BQ==
+      - Size: 474
+    * ActivityLogSection
+      - Id: 0~VOwMH25HIvqBOVfP_fcavpCVOTZ1MhqD1hmaA4qxoXZwct5lCA1U_vnpbvuzcNRSawAvTvkNA9fgt6Of-6Y1KQ==
+      - Size: 52963
+    * ActivityLogSection
+      - Id: 0~bEl9b7pq34Y4td-THgg6QZx498Vzy2eLCYF_PGivrafWE9isFXg-H2gMZUop5XFMVyE1nqeX_cObF7tVc9InzA==
+      - Size: 416705
+    * CASTree (file or dir)
+      - Id: 0~kxDVNddDUBQ9PkB1-lt-BhepB94IEzJw5tQL7fD1bt-OqQMMFVGc_1IRfULWBTk4mstR154EZfSCYFRfeqn3lw==
+      - Size: 91
+      - Refs: 3
+      + Coverage (plainFile)
+      + Index (plainFile)
+      + Metadata.plist (plainFile)
+        * raw
+          - Id: 0~V3eHMFQ1NoZwQR9Qgr0jWYktF68rOG0197iUx1a2gN8XX2_-qdqni5sBwmFqcU-6rP4_4APPSdebgbBFSFmJzw==
+          - Size: 128
+        * raw
+          - Id: 0~aBua7rNLdtHRdAAYhhPhEf6PbzyBUjNiUJs-biF51Tw4KeDVoNhcOnxsqS5S2UFX-rEAorUoQLUcVxn-WSNXQA==
+          - Size: 447
+        * raw
+          - Id: 0~oRMi0sbQLktfDDDGUS-SqBKpdDiD6HCztVES_ShfGr0KVcYENoIq7y9oUSDWL5B_P2gkdtWG8JEsJLxPbdWOZA==
+          - Size: 236
+    * ActionTestPlanRunSummaries
+      - Id: 0~mzLRmvj5klCvoM4FuTawZr22y6qZJURHhVfp-jJI0BFq4TqHGqxeZH5WAGd-C9hsu5lIMuECPNKL4URrXkGCTw==
+      - Size: 3352
+      - Refs: 2
+        * ActionTestSummary
+          - Id: 0~S_7p6euP-Mi_J9YufSiPg79IyAXimVISMB3cc5LZkbQLKd4SHNwfOhnM1ISVR0JAxlThkOO26JepOKixrsdLIg==
+          - Size: 426
+        * ActionTestSummary
+          - Id: 0~gzqsR1GZZKpxr7PpiADmo_sb_9ZXZfLq9_-HjeBSaTgUUfnqI7HI2mHGAq39Y9GMQuOUDiObFZbE-L3Eh0Go2A==
+          - Size: 4051
+    * CASTree (file or dir)
+      - Id: 0~vT9mq4cKlPG4vacPKZLVr4b1uZzTStJFrkAYwMUjKnNJPkIVFYnIZMyus6eqh4zrle6NbU4I3Py3GJed2uPdoQ==
+      - Size: 450
+      - Refs: 5
+      + Clone 1 of iPhone 16 Pro_68964AC8-1AFF-4A3C-951E-1A566AB321BC (directory)
+      + Clone 2 of iPhone 16 Pro_09AD47BC-B30D-46FF-960F-BDEF668D595E (directory)
+      + My Mac_00008103-001451810AF2001E (directory)
+      + TestAppTests-78A9FB32-3500-470A-B043-CCC285CFD322-Configuration-Test Scheme Action-Iteration-1 (directory)
+      + TestAppUITests-60CE3EBB-ABA2-432A-BA58-9A2FAAA471E1-Configuration-Test Scheme Action-Iteration-1 (directory)
+        * CASTree (file or dir)
+          - Id: 0~bv6naCINmhEKBdb4I_KP2uHPNlTf3b0EeoEyXEFJjySYFDd2shn1CathBrG9qWJ7QmKW7NF1KzrOVLGHlAaRBg==
+          - Size: 38
+          - Refs: 1
+          + testmanagerd.log (plainFile)
+            * raw
+              - Id: 0~bj_3GLKn8TZ3gfOC-E76bIWdtgPE0G_pAvH6EBrGGc7oXSLNWt43lmiDPcHYHfr47pDyjRV4btzUn2LUK4bK7g==
+              - Size: 3721
+        * CASTree (file or dir)
+          - Id: 0~xBc-WkcaROGB6RFR76MN9OrYCNcO39EkynDy1V1iCBYv9favAuc-gQlfBib8A2w7Z9PW_OoCogg8MT58ui9xyQ==
+          - Size: 38
+          - Refs: 1
+          + testmanagerd.log (plainFile)
+            * raw
+              - Id: 0~YGLxIDk4S0yofQdQxbdM7cceHucpg7Ypx_D2Bxdn2efZH6XgTnjfxJ5WT1TZfFR5xIjdIpyiohdeC53heqAZww==
+              - Size: 4053
+        * CASTree (file or dir)
+          - Id: 0~4VqMqsI5lOfxRppnud6-VDWcNsU8J7VgFCJfW2dXPwOcAkvU-I8Um5yp9n0Zv6nr3VmcxYggaVMDFfR0U_vjKw==
+          - Size: 2
+        * CASTree (file or dir)
+          - Id: 0~W6DIcFD1UBSFWh19Us0XArrdeRVj2y8KbkZ-0HvbSynE7UJGgKZDQsUL5IGViBI4Qqg8bSCQXTnUVSfsPEqx8g==
+          - Size: 106
+          - Refs: 2
+          + TestAppTests-69AF5EDC-FEE5-49CE-B7A2-50B688A38D02 (directory)
+          + scheduling.log (plainFile)
+            * CASTree (file or dir)
+              - Id: 0~yHnqCQbYjMtSBYd-LD9UsSuH_f56pYr-5X2jayRVrOgJ81axGWZFYufRrJpBhABN5y-F_L-fhi2WVzBWEIggqw==
+              - Size: 126
+              - Refs: 2
+              + Session-TestAppTests-2024-10-26_104536-ZOwkSc.log (plainFile)
+              + StandardOutputAndStandardError.txt (plainFile)
+                * raw
+                  - Id: 0~rCupxoIBK44Vc-Sob_8LGdMgHr50ZIiNiqmmySbkyHba3eSgRESLuKLoz9c2GtdI8i_YZb7lAENfw5oLRfI3dw==
+                  - Size: 32707
+                * raw
+                  - Id: 0~dGqldtX5W1SsDrMqCGBhnmBsbGLcYiU3WF47VOK7WCygNTrtNxmVvRwovjOuw9RXVhqxb_AaVzAdW2Qx7SOTBA==
+                  - Size: 714
+            * raw
+              - Id: 0~rIdcMM-s2gwtTr5zKHD2qYHcBP6oZRP9Hc0gYB2fJxOJx73tBooRuVb9nyzqkU7yJzKdZnrnYQ1V7bP6NpBftQ==
+              - Size: 1704
+        * CASTree (file or dir)
+          - Id: 0~YfVU4UfXyAldDEQVWekJtpp-yQtapTvp-anAp0dMTLxWohQWPmbwXgMWwevNlqFulgWohQSEEd6Fu9yFpd733w==
+          - Size: 180
+          - Refs: 3
+          + TestAppUITests-AD4933B7-7C14-4574-89D7-3E039E38688D (directory)
+          + TestAppUITests-C636385F-BF27-4424-A008-156E4A44CDB8 (directory)
+          + scheduling.log (plainFile)
+            * CASTree (file or dir)
+              - Id: 0~BRkIygXHx6M9WqF7-1ul2IEc2sqOE6M-PLAeyeC1MXM2Kin6g6iRUUDevQxaovPbXVywf4zH21_ezDhLUYtc5w==
+              - Size: 128
+              - Refs: 2
+              + Session-TestAppUITests-2024-10-26_104732-KVA9kA.log (plainFile)
+              + StandardOutputAndStandardError.txt (plainFile)
+                * raw
+                  - Id: 0~v-3oMEVdIYIdB89RHzQBf_ttCMM88UmxZiOWkQlhAszM45aXY6aOf08tLV33T6baG6reGArv9F3Cob88pBWLWA==
+                  - Size: 4594
+                * raw
+                  - Id: 0~gutSLF4Lfhs2O8hHzzDL8Abtsp1U_lTA4Ze6dk0Pyd7Zg-T8H8MezNcgXNTn29Q3TrtPxi56v88AE6c99m1b_g==
+                  - Size: 234
+            * CASTree (file or dir)
+              - Id: 0~JZJsFZSM59qGbOP-MOb-T6iSUVEplalij7wo2U6Fh0MRrxLkLdEKIexpUzkLbarhYlhWVfIhcPWdSttgeU1NuQ==
+              - Size: 205
+              - Refs: 3
+              + Session-TestAppUITests-2024-10-26_104527-bF9AhA.log (plainFile)
+              + StandardOutputAndStandardError-com.chrismash.TestApp.txt (plainFile)
+              + StandardOutputAndStandardError.txt (plainFile)
+                * raw
+                  - Id: 0~aHgggvpP-rh_uVFNzNULYpvHEdv8P1qzC4M4CUq0Xo8zi2KdsGPSvLTOe8S3TYHyClhxe2Ai83__wU8QZp0gsg==
+                  - Size: 124851
+                * raw
+                  - Id: 0~lBI7OpIsVuB_q14inPa6rIIikw7N0aIcybArw3lxroQSOA9mixvvIK58neRpOOyQFk9n9D_8Hl6dAxy9zcjfIQ==
+                  - Size: 7583
+                * raw
+                  - Id: 0~91Mrf1KkQtqel8yJHw3lvk21d6RbHc_BQ1HlyS1EWYEjnHmC5e1F7fBV8s2kx4QcsYwNX-wCAVVWAudab2nspw==
+                  - Size: 1553
+            * raw
+              - Id: 0~4nhWaBXhkdksUy12kWJ8gfKCn5TOVQF8383negEh2ESp_IZeEFhZFP9ViqGZIaSXzYx51ceZePH3FOUM91tVxw==
+              - Size: 2734

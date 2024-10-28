@@ -10,6 +10,7 @@ import XCTest
 final class TestAppUITests: XCTestCase {
 
     func testExample() throws {
+        print("UI Tests running")
         let app = XCUIApplication()
         app.launch()
 

@@ -18,7 +18,7 @@ struct GraphParser {
     
     enum ParseError: Error {
         case logFilenameNotFound
-        case noTargetsWithLogsFound
+        case noDirectoriesFound
     }
     
     static func parseLogs(from graph: String) throws -> [Log] {
@@ -58,87 +58,89 @@ struct GraphParser {
             throw ParseError.logFilenameNotFound
         }
         
-        // TODO: this gets extra "Refs: " prior to the one we want, which isn't ideal
-        // maybe a tokenisation or parsing line by line would be better than a regex?
-        let regex = Regex {
-            "Refs: "
-            ZeroOrMore(.reluctant) {
-                /./
-            }
-            logFilename
-            Capture {
-                ZeroOrMore(.reluctant) {
-                    /./
-                }
-            }
-            "* CASTree"
-        }.dotMatchesNewlines()
-        let matches = graph.matches(of: regex)
-        
-        guard !matches.isEmpty else {
-            throw ParseError.noTargetsWithLogsFound
+        let casTreeRanges = graph.ranges(of: "* CASTree (file or dir)")
+        guard !casTreeRanges.isEmpty else {
+            throw ParseError.noDirectoriesFound
         }
         
-        print("Found \(matches.count) target(s) with logs")
-        
         var logs: [Log] = []
-        for match in matches {
-            // The regex matches from the first "Refs: " (not good enough at regex to avoid that),
-            // so we find the last one and know that's the start of the detail we're interested in
-            guard let idxLastRef = match.0.range(of: "Refs: ",
-                                                          options: .backwards)?.lowerBound else {
-                print("Error trying to find start of logs, skipping target")
-                continue
-            }
-            let outputOfInterest = match.0[idxLastRef...]
-            // We get the substring from "Refs: " up to the std out filename
-            let rangeOfLog = outputOfInterest.range(of: logFilename)
-            guard let idxRefsEnd = outputOfInterest.range(of: "* ",
-                                                          range: rangeOfLog!.lowerBound..<outputOfInterest.endIndex)?.lowerBound else {
-                print("Error trying to find end of logs, skipping target")
-                continue
-            }
-            
-            let refs = outputOfInterest[idxLastRef...idxRefsEnd].components(separatedBy: "+").dropFirst()
-            for (refIdx, ref) in refs.enumerated() where ref.contains(logFilename) {
-                // We then split on the "*" characters,
-                // which gives us an array of the file IDs we can index into
-                let ids = outputOfInterest[idxLastRef..<outputOfInterest.endIndex].components(separatedBy: "*")
-                // We extract the file ID from the correct chunk of the output
-                let fileIDLines = ids[refIdx + 1].components(separatedBy: "\n")
-                guard fileIDLines.count > 1 else {
-                    print("Error trying to find log ID line, skipping log")
-                    continue
-                }
-                let fileIDLine = fileIDLines[1]
-                guard let prefixRange = fileIDLine.range(of: "Id: ") else {
-                    print("Error trying to find log ID, skipping log")
+        for (idx, range) in casTreeRanges.enumerated() {
+            let upperBound = idx < (casTreeRanges.count - 1) ? casTreeRanges[idx+1].lowerBound : graph.index(before: graph.endIndex)
+            let casTree = graph[range.lowerBound...upperBound]
+            if casTree.contains(logFilename) {
+                guard let idxLastRef = casTree.range(of: "Refs: ")?.lowerBound else { // TODO: rename, only one ref in the chunk
+                    print("Error trying to find start of logs, skipping target")
                     continue
                 }
                 
-                let fileID = fileIDLine[prefixRange.upperBound...]
-                
-                // Find the name of the target
-                guard let idxLastSession = outputOfInterest.range(of: "+ Session-",
-                                                                  options: .backwards)?.lowerBound else {
-                    print("Error trying to find target name, skipping log")
+                // We get the substring from "Refs: " up to the std out filename
+                let rangeOfLog = casTree.range(of: logFilename) // TODO: this is optional and has a force unwrap in next line
+                guard let idxRefsEnd = casTree.range(of: "* ",
+                                                     range: rangeOfLog!.lowerBound..<casTree.endIndex)?.lowerBound else {
+                    print("Error trying to find end of logs, skipping target")
                     continue
                 }
-                
-                let nameLines = outputOfInterest[idxLastSession...idxRefsEnd].components(separatedBy: "\n")
-                
-                guard let nameLine = nameLines.first else {
-                    print("Error trying to find target name line, skipping log")
-                    continue
+    
+                let refs = casTree[idxLastRef...idxRefsEnd].components(separatedBy: "+").dropFirst()
+                for (refIdx, ref) in refs.enumerated() where ref.contains(logFilename) {
+                    // We then split on the "*" characters,
+                    // which gives us an array of the file IDs we can index into
+                    let ids = casTree[idxLastRef..<casTree.endIndex].components(separatedBy: "*")
+                    // We extract the file ID from the correct chunk of the output
+                    let fileIDLines = ids[refIdx + 1].components(separatedBy: "\n")
+                    guard fileIDLines.count > 1 else {
+                        print("Error trying to find log ID line, skipping log")
+                        continue
+                    }
+                    let fileIDLine = fileIDLines[1]
+                    guard let prefixRange = fileIDLine.range(of: "Id: ") else {
+                        print("Error trying to find log ID, skipping log")
+                        continue
+                    }
+                    
+                    let fileID = fileIDLine[prefixRange.upperBound...]
+                    
+                    // Find the name of the target
+                    guard let idxLastSession = casTree.range(of: "+ Session-",
+                                                             options: .backwards)?.lowerBound else {
+                        print("Error trying to find target name, skipping log")
+                        continue
+                    }
+                    
+                    let nameLines = casTree[idxLastSession...idxRefsEnd].components(separatedBy: "\n")
+                    
+                    guard let nameLine = nameLines.first else {
+                        print("Error trying to find target name line, skipping log")
+                        continue
+                    }
+                    
+                    var name = cleanName(nameLine)
+                    if let bundleID = extractBundleID(idx: refIdx, from: nameLines) {
+                        name += "-\(bundleID)"
+                    }
+                    
+                    // De-duplicate names where multiple logs under the same session
+                    let numMatchingNames = logs.filter { existingLog in
+                        if existingLog.name == name {
+                            return true
+                        }
+                        
+                        let regex = Regex {
+                            existingLog.name
+                            "-"
+                            OneOrMore(.digit)
+                        }
+    
+                        return name.firstMatch(of: regex) != nil
+                    }.count
+                    // TODO: UT this de-duplication
+                    if numMatchingNames > 0 {
+                        name += "-\(numMatchingNames + 1)"
+                    }
+                    
+                    logs.append(GraphParser.Log(name: name,
+                                                id: String(fileID)))
                 }
-                
-                var name = cleanName(nameLine)
-                if let bundleID = extractBundleID(idx: refIdx, from: nameLines) {
-                    name += "-\(bundleID)"
-                }
-                
-                logs.append(GraphParser.Log(name: name,
-                                            id: String(fileID)))
             }
         }
         

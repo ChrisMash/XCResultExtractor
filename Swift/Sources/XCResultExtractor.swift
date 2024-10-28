@@ -10,10 +10,11 @@ import ArgumentParser
 
 // TODO: usage example says the executable is xc-result-extractor but it's actually XCResultExtractor?
 // TODO: shell script to test the actual exe (unless xcode gives an alternative)
-// TODO: multi-scheme in test app (could perhaps even use UT and integration tests of the package?)
 // TODO: catch all errors and wrap them to know what step failed?
 // TODO: loads of comments
 // TODO: consistent URL/String for paths?
+// TODO: rename TestApp to ExampleApp
+// TODO: check for TODOs in testapp
 
 @main
 struct XCResultExtractor: ParsableCommand {
