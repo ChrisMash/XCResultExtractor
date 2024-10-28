@@ -1,0 +1,38 @@
+    * CASTree (file or dir)
+      - Id: 0~YfVU4UfXyAldDEQVWekJtpp-yQtapTvp-anAp0dMTLxWohQWPmbwXgMWwevNlqFulgWohQSEEd6Fu9yFpd733w==
+      - Size: 180
+      - Refs: 3
+      + TestAppUITests-AD4933B7-7C14-4574-89D7-3E039E38688D (directory)
+      + TestAppUITests-C636385F-BF27-4424-A008-156E4A44CDB8 (directory)
+      + scheduling.log (plainFile)
+        * CASTree (file or dir)
+          - Id: 0~BRkIygXHx6M9WqF7-1ul2IEc2sqOE6M-PLAeyeC1MXM2Kin6g6iRUUDevQxaovPbXVywf4zH21_ezDhLUYtc5w==
+          - Size: 128
+          - Refs: 2
+          + Session-TestAppUITests-2024-10-26_104732-KVA9kA.log (plainFile)
+          + StandardOutputAndStandardError.txt (plainFile)
+            * raw
+              - Id: 0~v-3oMEVdIYIdB89RHzQBf_ttCMM88UmxZiOWkQlhAszM45aXY6aOf08tLV33T6baG6reGArv9F3Cob88pBWLWA==
+              - Size: 4594
+            * raw
+              - Id: 0~gutSLF4Lfhs2O8hHzzDL8Abtsp1U_lTA4Ze6dk0Pyd7Zg-T8H8MezNcgXNTn29Q3TrtPxi56v88AE6c99m1b_g==
+              - Size: 234
+        * CASTree (file or dir)
+          - Id: 0~JZJsFZSM59qGbOP-MOb-T6iSUVEplalij7wo2U6Fh0MRrxLkLdEKIexpUzkLbarhYlhWVfIhcPWdSttgeU1NuQ==
+          - Size: 205
+          - Refs: 3
+          + Session-TestAppUITests-2024-10-26_104527-bF9AhA.log (plainFile)
+          + StandardOutputAndStandardError.txt (plainFile)
+          + StandardOutputAndStandardError.txt (plainFile)
+            * raw
+              - Id: 0~aHgggvpP-rh_uVFNzNULYpvHEdv8P1qzC4M4CUq0Xo8zi2KdsGPSvLTOe8S3TYHyClhxe2Ai83__wU8QZp0gsg==
+              - Size: 124851
+            * raw
+              - Id: 0~lBI7OpIsVuB_q14inPa6rIIikw7N0aIcybArw3lxroQSOA9mixvvIK58neRpOOyQFk9n9D_8Hl6dAxy9zcjfIQ==
+              - Size: 7583
+            * raw
+              - Id: 0~91Mrf1KkQtqel8yJHw3lvk21d6RbHc_BQ1HlyS1EWYEjnHmC5e1F7fBV8s2kx4QcsYwNX-wCAVVWAudab2nspw==
+              - Size: 1553
+        * raw
+          - Id: 0~4nhWaBXhkdksUy12kWJ8gfKCn5TOVQF8383negEh2ESp_IZeEFhZFP9ViqGZIaSXzYx51ceZePH3FOUM91tVxw==
+          - Size: 2734

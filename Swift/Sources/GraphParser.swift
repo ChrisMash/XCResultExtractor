@@ -126,14 +126,13 @@ struct GraphParser {
                         }
                         
                         let regex = Regex {
-                            existingLog.name
+                            name
                             "-"
                             OneOrMore(.digit)
                         }
     
-                        return name.firstMatch(of: regex) != nil
+                        return existingLog.name.firstMatch(of: regex) != nil
                     }.count
-                    // TODO: UT this de-duplication
                     if numMatchingNames > 0 {
                         name += "-\(numMatchingNames + 1)"
                     }
