@@ -9,7 +9,7 @@ import Testing
 import Foundation
 @testable import XCResultExtractor
 
-struct XCResultExtractorTests {
+struct LogExtractorTests {
 
     @Test func extractsLogsExtractsLogsFromTestAppXCResult() async throws {
         let mockXCResultTool = MockXCResultTool()
@@ -20,12 +20,13 @@ struct XCResultExtractorTests {
                                               xcResultTool: mockXCResultTool,
                                               shell: MockShell(),
                                               fileHandler: mockFileHandler)
-        // TODO: errors exporting are logged but not particularly discernable in tests? so this passes even if the export didn't work
     }
     
     // TODO: test dir creation throwing error
     // TODO: test optional output path
+    // TODO: test graph extract error
+    // TODO: test graph parse error
+    // TODO: test log export error
     // TODO: test graph output as expected?
-    // TODO: test logs?
 
 }
