@@ -11,7 +11,7 @@ import Testing
 struct GraphParserTests {
 
     @Test func testAppTestGraphParsesCorrectly() async throws {
-        let sut = GraphParser()
+        let sut = GraphParser(logger: MockLogger())
         let graph = try String(testAssetPath: "TestAppGraph.txt")
         let logs = try sut.parseLogs(from: graph)
         try #require(logs.count == 2)
@@ -22,7 +22,7 @@ struct GraphParserTests {
     }
     
     @Test func testAppTestGraphMultiParsesCorrectly() async throws {
-        let sut = GraphParser()
+        let sut = GraphParser(logger: MockLogger())
         let graph = try String(testAssetPath: "TestAppGraphMulti.txt")
         let logs = try sut.parseLogs(from: graph)
         try #require(logs.count == 4)
@@ -37,7 +37,7 @@ struct GraphParserTests {
     }
     
     @Test func duplicateLogNamesGraphParsesCorrectly() async throws {
-        let sut = GraphParser()
+        let sut = GraphParser(logger: MockLogger())
         let graph = try String(testAssetPath: "DuplicateLogNamesGraph.txt")
         let logs = try sut.parseLogs(from: graph)
         try #require(logs.count == 3)
@@ -50,14 +50,14 @@ struct GraphParserTests {
     }
     
     @Test func graphWithoutStdOutputThrowsError() async throws {
-        let sut = GraphParser()
+        let sut = GraphParser(logger: MockLogger())
         #expect(throws: GraphParser.ParseError.logFilenameNotFound) {
             try sut.parseLogs(from: "not really a graph")
         }
     }
     
     @Test func graphWithoutTargetLogsThrowsError() async throws {
-        let sut = GraphParser()
+        let sut = GraphParser(logger: MockLogger())
         #expect(throws: GraphParser.ParseError.noDirectoriesFound) {
             try sut.parseLogs(from: "StandardOutputAndStandardError")
         }

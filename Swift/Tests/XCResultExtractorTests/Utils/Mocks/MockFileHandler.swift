@@ -8,7 +8,7 @@
 import Foundation
 import XCResultExtractor
 
-class MockFileHandler: FileHandler {
+class MockFileHandler: FileHandlerInterface {
     
     var cleanUpPaths: [String] = []
     

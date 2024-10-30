@@ -13,14 +13,14 @@ struct XCResultToolTests {
 
     // MARK: extractGraph
     @Test func extractGraphReturnsGraphFromTestAppResults() async throws {
-        let sut = XCResultTool()
         let path = URL.testAsset(path: "TestApp.xcresult")
         let mockShell = MockShell()
         mockShell.executeOutput = "this is the graph"
         let mockFileHandler = MockFileHandler()
-        let graph = try sut.extractGraph(from: path.path(),
-                                         shell: mockShell,
-                                         fileHandler: mockFileHandler)
+        let sut = XCResultTool(shell: mockShell,
+                               fileHandler: mockFileHandler,
+                               logger: MockLogger())
+        let graph = try sut.extractGraph(from: path.path())
         #expect(graph == "this is the graph")
         // Graph write not requested
         #expect(mockFileHandler.writeStringIn == nil)
@@ -28,16 +28,16 @@ struct XCResultToolTests {
     }
     
     @Test func extractGraphReturnsGraphAndWritesOutFromTestAppResults() async throws {
-        let sut = XCResultTool()
         let path = URL.testAsset(path: "TestApp.xcresult")
         let mockShell = MockShell()
         mockShell.executeOutput = "this is the graph"
         let mockFileHandler = MockFileHandler()
+        let sut = XCResultTool(shell: mockShell,
+                               fileHandler: mockFileHandler,
+                               logger: MockLogger())
         let outputPath = URL.testAssetDir()
         let graph = try sut.extractGraph(from: path.path(),
-                                         outputPath: outputPath,
-                                         shell: mockShell,
-                                         fileHandler: mockFileHandler)
+                                         outputPath: outputPath)
         #expect(graph == "this is the graph")
         // Graph write requested
         #expect(mockFileHandler.writeStringIn == graph)
@@ -45,14 +45,13 @@ struct XCResultToolTests {
     }
     
     @Test func extractGraphThrowsErrorFromShell() async throws {
-        let sut = XCResultTool()
         let mockShell = MockShell()
         mockShell.executeErrorOut = TestError()
-        
+        let sut = XCResultTool(shell: mockShell,
+                               fileHandler: MockFileHandler(),
+                               logger: MockLogger())
         try expectThrows {
-            try sut.extractGraph(from: "some path",
-                                 shell: mockShell,
-                                 fileHandler: MockFileHandler())
+            try sut.extractGraph(from: "some path")
         } error: {
             if case let GraphExtractError.xcResultToolError(rootError) = $0 {
                 #expect(rootError is TestError)
@@ -63,14 +62,14 @@ struct XCResultToolTests {
     }
     
     @Test func extractGraphThrowsErrorForEmptyGraph() async throws {
-        let sut = XCResultTool()
         let mockShell = MockShell()
         mockShell.executeOutput = ""
+        let sut = XCResultTool(shell: mockShell,
+                               fileHandler: MockFileHandler(),
+                               logger: MockLogger())
         
         try expectThrows {
-            try sut.extractGraph(from: "some path",
-                                 shell: mockShell,
-                                 fileHandler: MockFileHandler())
+            try sut.extractGraph(from: "some path")
         } error: {
             let extractError = try #require($0 as? GraphExtractError)
             switch extractError {
@@ -83,14 +82,13 @@ struct XCResultToolTests {
     }
     
     @Test func extractGraphThrowsErrorForErrorOutput() async throws {
-        let sut = XCResultTool()
         let mockShell = MockShell()
         mockShell.executeOutput = "Error:"
-        
+        let sut = XCResultTool(shell: mockShell,
+                               fileHandler: MockFileHandler(),
+                               logger: MockLogger())
         try expectThrows {
-            try sut.extractGraph(from: "some path",
-                                 shell: mockShell,
-                                 fileHandler: MockFileHandler())
+            try sut.extractGraph(from: "some path")
         } error: {
             let extractError = try #require($0 as? GraphExtractError)
             switch extractError {
@@ -103,16 +101,16 @@ struct XCResultToolTests {
     }
     
     @Test func extractGraphHandlesErrorFromGraphWrite() async throws {
-        let sut = XCResultTool()
         let path = URL.testAsset(path: "TestApp.xcresult")
         let mockShell = MockShell()
         mockShell.executeOutput = "this is the graph"
         let mockFileHandler = MockFileHandler()
         mockFileHandler.writeErrorOut = TestError()
+        let sut = XCResultTool(shell: mockShell,
+                               fileHandler: mockFileHandler,
+                               logger: MockLogger())
         let graph = try sut.extractGraph(from: path.path(),
-                                         outputPath: URL(fileURLWithPath: "output_path"),
-                                         shell: mockShell,
-                                         fileHandler: mockFileHandler)
+                                         outputPath: URL(fileURLWithPath: "output_path"))
         #expect(graph == "this is the graph")
         // Graph write requested
         #expect(mockFileHandler.writeStringIn == graph)
@@ -121,18 +119,18 @@ struct XCResultToolTests {
     
     // MARK: exportLogs
     @Test func exportLogsSucceeds() async throws {
-        let sut = XCResultTool()
         let mockShell = MockShell()
         mockShell.executeOutput = "Exported file with id X"
         let mockFileHandler = MockFileHandler()
+        let sut = XCResultTool(shell: mockShell,
+                               fileHandler: mockFileHandler,
+                               logger: MockLogger())
         try sut.export(logs: [
             .init(name: "Log1", id: "id1"),
             .init(name: "Log2", id: "id2")
         ],
                        from: "path_to.xcresult",
-                       to: "output_path",
-                       shell: mockShell,
-                       fileHandler: mockFileHandler)
+                       to: "output_path")
         #expect(mockFileHandler.createDirPathIn == "output_path/tmp/")
         #expect(mockFileHandler.moveItemsSourceIn?.path() == "output_path/tmp/")
         #expect(mockFileHandler.moveItemsDestinationIn?.path() == "output_path/")
@@ -140,8 +138,10 @@ struct XCResultToolTests {
     }
     
     @Test func exportLogsReportsCreateDirError() async throws {
-        let sut = XCResultTool()
         let mockFileHandler = MockFileHandler()
+        let sut = XCResultTool(shell: MockShell(),
+                               fileHandler: mockFileHandler,
+                               logger: MockLogger())
         mockFileHandler.createDirErrorOut = TestError()
         try expectThrows {
             try sut.export(logs: [
@@ -149,9 +149,7 @@ struct XCResultToolTests {
                 .init(name: "Log2", id: "id2")
             ],
                            from: "path_to.xcresult",
-                           to: "output_path",
-                           shell: MockShell(),
-                           fileHandler: mockFileHandler)
+                           to: "output_path")
         } error: {
             if case let LogExportError.createOutputDirectoryFailed(rootError) = $0 {
                 #expect(rootError is TestError)
@@ -164,13 +162,13 @@ struct XCResultToolTests {
     }
     
     @Test func exportZeroLogsReportsError() async throws {
-        let sut = XCResultTool()
+        let sut = XCResultTool(shell: MockShell(),
+                               fileHandler: MockFileHandler(),
+                               logger: MockLogger())
         try expectThrows {
             try sut.export(logs: [],
                            from: "path_to.xcresult",
-                           to: "output_path",
-                           shell: MockShell(),
-                           fileHandler: MockFileHandler())
+                           to: "output_path")
         } error: {
             let exportError = try #require($0 as? LogExportError)
             switch exportError {

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol FileHandler {
+public protocol FileHandlerInterface {
 
     func createDirectory(atPath path: String,
                          withIntermediateDirectories createIntermediates: Bool,
@@ -26,7 +26,7 @@ public protocol FileHandler {
 }
 
 // TODO: UTs
-public struct DefaultFileHandler: FileHandler {
+public struct FileHandler: FileHandlerInterface {
     
     enum FileError: Error {
         case failedToEnumerateDirectory

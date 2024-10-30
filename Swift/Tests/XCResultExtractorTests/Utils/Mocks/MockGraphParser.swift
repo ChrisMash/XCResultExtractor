@@ -7,7 +7,7 @@
 
 @testable import XCResultExtractor
 
-class MockGraphParser: GraphParserProtocol {
+class MockGraphParser: GraphParserInterface {
     
     var parseLogsOut: [Log]?
     var parseErrorOut: Error?

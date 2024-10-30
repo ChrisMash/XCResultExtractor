@@ -16,9 +16,7 @@ class MockXCResultTool: XCResultToolInterface {
     var extractOutputPathIn: URL?
     
     func extractGraph(from path: String,
-                      outputPath: URL?,
-                      shell: ShellInterface,
-                      fileHandler: FileHandler) throws -> String {
+                      outputPath: URL?) throws -> String {
         extractPathIn = path
         extractOutputPathIn = outputPath
         
@@ -36,9 +34,7 @@ class MockXCResultTool: XCResultToolInterface {
     
     func export(logs: [Log],
                 from xcResultPath: String,
-                to outputPathBase: String,
-                shell: ShellInterface,
-                fileHandler: FileHandler) throws {
+                to outputPathBase: String) throws {
         exportLogsIn = logs
         exportPathIn = xcResultPath
         exportOutputPathIn = outputPathBase

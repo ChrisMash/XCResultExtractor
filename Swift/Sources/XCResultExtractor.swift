@@ -25,8 +25,18 @@ struct XCResultExtractor: ParsableCommand {
     var outputPath: String?
     
     mutating func run() throws {
-        try LogExtractor.extractLogs(xcResultPath: xcResultPath,
-                                     outputPath: outputPath)
+        let logger = Logger()
+        let shell = Shell()
+        let fileHandler = FileHandler()
+        let extractor = LogExtractor(xcResultTool: XCResultTool(shell: shell,
+                                                                fileHandler: fileHandler,
+                                                                logger: logger),
+                                     shell: shell,
+                                     graphParser: GraphParser(logger: logger),
+                                     fileHandler: fileHandler,
+                                     logger: logger)
+        try extractor.extractLogs(xcResultPath: xcResultPath,
+                                  outputPath: outputPath)
     }
     
 }

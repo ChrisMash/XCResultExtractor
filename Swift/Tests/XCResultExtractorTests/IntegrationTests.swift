@@ -12,8 +12,9 @@ import Foundation
 struct IntegrationTests {
 
     @Test func extractsLogsExtractsLogsFromTestAppMultiXCResult() async throws {
-        try LogExtractor.extractLogs(xcResultPath: URL.testAsset(path: "TestAppMulti.xcresult").path(),
-                                     outputPath: nil)
+        let sut = makeSUT()
+        try sut.extractLogs(xcResultPath: URL.testAsset(path: "TestAppMulti.xcresult").path(),
+                            outputPath: nil)
         let fm = FileManager.default
         // Check tmp directory not present
         let testAssetsDir = URL.testAssetDir()
@@ -52,8 +53,9 @@ struct IntegrationTests {
     }
     
     @Test func extractsLogsExtractsLogsFromTestAppXCResult() async throws {
-        try LogExtractor.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
-                                     outputPath: nil)
+        let sut = makeSUT()
+        try sut.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
+                            outputPath: nil)
         let fm = FileManager.default
         // Check tmp directory not present
         let testAssetsDir = URL.testAssetDir()
@@ -84,9 +86,10 @@ struct IntegrationTests {
     }
     
     @Test func extractsLogsExtractsLogsFromTestAppXCResultToOutputpath() async throws {
+        let sut = makeSUT()
         let outputPath = URL.testAssetDir().appending(path: "test")
-        try LogExtractor.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
-                                              outputPath: outputPath.path())
+        try sut.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
+                            outputPath: outputPath.path())
         let fm = FileManager.default
         // Check tmp directory not present
         #expect(!fm.fileExists(atPath: outputPath.appending(path: "tmp",
@@ -112,6 +115,20 @@ struct IntegrationTests {
         }
         
         try? fm.removeItem(atPath: outputPath.path())
+    }
+    
+    // MARK: Private
+    private func makeSUT() -> LogExtractor {
+        let logger = Logger()
+        let shell = Shell()
+        let fileHandler = FileHandler()
+        return LogExtractor(xcResultTool: XCResultTool(shell: shell,
+                                                       fileHandler: fileHandler,
+                                                       logger: logger),
+                            shell: shell,
+                            graphParser: GraphParser(logger: logger),
+                            fileHandler: fileHandler,
+                            logger: logger)
     }
 
 }

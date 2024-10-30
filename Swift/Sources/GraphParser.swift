@@ -13,17 +13,19 @@ struct Log {
     let id: String
 }
 
-protocol GraphParserProtocol {
+protocol GraphParserInterface {
     func parseLogs(from graph: String) throws -> [Log]
 }
 
 // TODO: Session.log useful? just combination of the two?
-struct GraphParser: GraphParserProtocol {
+struct GraphParser: GraphParserInterface {
     
     enum ParseError: Error {
         case logFilenameNotFound
         case noDirectoriesFound
     }
+    
+    let logger: LoggerInterface
     
     func parseLogs(from graph: String) throws -> [Log] {
         // Example graph (partial):
@@ -74,18 +76,18 @@ struct GraphParser: GraphParserProtocol {
             if casTree.contains(Self.logFilename) {
                 // TODO: all this code is probably optmisable
                 guard let idxRef = casTree.range(of: "Refs: ")?.lowerBound else {
-                    print("Error trying to find start of logs, skipping target")
+                    logger.log("Error trying to find start of logs, skipping target")
                     continue
                 }
                 
                 // We get the substring from "Refs: " up to the std out filename
                 guard let rangeOfLog = casTree.range(of: Self.logFilename) else {
-                    print("Error trying to find range of log, skipping target")
+                    logger.log("Error trying to find range of log, skipping target")
                     continue
                 }
                 guard let idxRefsEnd = casTree.range(of: "* ",
                                                      range: rangeOfLog.lowerBound..<casTree.endIndex)?.lowerBound else {
-                    print("Error trying to find end of logs, skipping target")
+                    logger.log("Error trying to find end of logs, skipping target")
                     continue
                 }
     
@@ -97,12 +99,12 @@ struct GraphParser: GraphParserProtocol {
                     // We extract the file ID from the correct chunk of the output
                     let fileIDLines = ids[refIdx + 1].components(separatedBy: "\n")
                     guard fileIDLines.count > 1 else {
-                        print("Error trying to find log ID line, skipping log")
+                        logger.log("Error trying to find log ID line, skipping log")
                         continue
                     }
                     let fileIDLine = fileIDLines[1]
                     guard let prefixRange = fileIDLine.range(of: "Id: ") else {
-                        print("Error trying to find log ID, skipping log")
+                        logger.log("Error trying to find log ID, skipping log")
                         continue
                     }
                     
@@ -111,14 +113,14 @@ struct GraphParser: GraphParserProtocol {
                     // Find the name of the target
                     guard let idxLastSession = casTree.range(of: "+ Session-",
                                                              options: .backwards)?.lowerBound else {
-                        print("Error trying to find target name, skipping log")
+                        logger.log("Error trying to find target name, skipping log")
                         continue
                     }
                     
                     let nameLines = casTree[idxLastSession...idxRefsEnd].components(separatedBy: "\n")
                     
                     guard let nameLine = nameLines.first else {
-                        print("Error trying to find target name line, skipping log")
+                        logger.log("Error trying to find target name line, skipping log")
                         continue
                     }
                     
@@ -176,7 +178,7 @@ struct GraphParser: GraphParserProtocol {
         if let match = name.firstMatch(of: regex) {
             return String(match.output.1)
         } else {
-            print("WARNING: failed to clean \(name)")
+            logger.log("WARNING: failed to clean \(name)")
             return name.removingInvalidFilePathCharacters
         }
     }
@@ -186,7 +188,7 @@ struct GraphParser: GraphParserProtocol {
         //      + StandardOutputAndStandardError-com.chrismash.TestApp.txt (plainFile)  <----- bundle ID included
         //      + StandardOutputAndStandardError.txt (plainFile)                        <----- bundle ID not included
         guard idx < lines.count else {
-            print("WARNING: requested bundle ID from line \(idx) when there are only \(lines.count)")
+            logger.log("WARNING: requested bundle ID from line \(idx) when there are only \(lines.count)")
             return nil
         }
         

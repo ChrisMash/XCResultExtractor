@@ -10,15 +10,11 @@ import Foundation
 protocol XCResultToolInterface {
     
     func extractGraph(from path: String,
-                      outputPath: URL?,
-                      shell: ShellInterface,
-                      fileHandler: FileHandler) throws -> String
+                      outputPath: URL?) throws -> String
     
     func export(logs: [Log],
                 from xcResultPath: String,
-                to outputPathBase: String,
-                shell: ShellInterface,
-                fileHandler: FileHandler) throws
+                to outputPathBase: String) throws
     
 }
 
@@ -35,10 +31,12 @@ public enum LogExportError: Error {
 
 struct XCResultTool: XCResultToolInterface {
     
+    let shell: ShellInterface
+    let fileHandler: FileHandlerInterface
+    let logger: LoggerInterface
+    
     func extractGraph(from path: String,
-                      outputPath: URL? = nil,
-                      shell: ShellInterface,
-                      fileHandler: FileHandler) throws -> String {
+                      outputPath: URL? = nil) throws -> String {
         let graph: String
         do {
             graph = try shell.execute("xcrun xcresulttool graph --path \(path)/ --legacy")
@@ -58,14 +56,14 @@ struct XCResultTool: XCResultToolInterface {
         if let outputPath {
             let fileOutputPath = outputPath.appending(path: "graph.txt",
                                                       directoryHint: .notDirectory)
-            print("Writing graph to \(fileOutputPath.path())")
+            logger.log("Writing graph to \(fileOutputPath.path())")
             do {
                 try fileHandler.write(string: graph,
                                       to: fileOutputPath,
                                       atomically: true,
                                       encoding: .utf8)
             } catch {
-                print("Error writing graph: \(error)")
+                logger.log("Error writing graph: \(error)")
             }
         }
         
@@ -75,9 +73,7 @@ struct XCResultTool: XCResultToolInterface {
     // Note: failures to export are only logged, no errors thrown
     func export(logs: [Log],
                 from xcResultPath: String,
-                to outputPathBase: String,
-                shell: ShellInterface,
-                fileHandler: FileHandler) throws {
+                to outputPathBase: String) throws {
         guard !logs.isEmpty else {
             throw LogExportError.noLogsProvided
         }
@@ -102,15 +98,15 @@ struct XCResultTool: XCResultToolInterface {
             do {
                 cmdOutput = try shell.execute("xcrun xcresulttool export --type file --path \(xcResultPath)/ --output-path \(outputPath) --id \(log.id) --legacy")
             } catch {
-                print("Error exporting log: \(error)")
+                logger.log("Error exporting log: \(error)")
                 continue
             }
             
             if !cmdOutput.starts(with: "Exported file with id ") {
-                print("Error exporting \(outputPath):\n \(cmdOutput)")
+                logger.log("Error exporting \(outputPath):\n \(cmdOutput)")
                 continue
             } else {
-                print("Exported \(outputPath)")
+                logger.log("Exported \(outputPath)")
             }
         }
         
@@ -118,13 +114,13 @@ struct XCResultTool: XCResultToolInterface {
             try fileHandler.moveItems(from: tmpOutputPath,
                                       to: targetOutputPath)
         } catch {
-            print("Error moving items from tmp folder \(tmpOutputPath) to \(targetOutputPath): \(error)")
+            logger.log("Error moving items from tmp folder \(tmpOutputPath) to \(targetOutputPath): \(error)")
         }
         
         do {
             try fileHandler.removeItem(at: tmpOutputPath)
         } catch {
-            print("Error removing tmp folder \(tmpOutputPath): \(error)")
+            logger.log("Error removing tmp folder \(tmpOutputPath): \(error)")
         }
     }
     

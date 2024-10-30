@@ -16,12 +16,13 @@ struct LogExtractorTests {
         mockXCResultTool.extractGraphOut = "some graph"
         let mockGraphParser = MockGraphParser()
         mockGraphParser.parseLogsOut = []
-        try LogExtractor.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
-                                     outputPath: nil,
-                                     xcResultTool: mockXCResultTool,
-                                     shell: MockShell(),
-                                     graphParser: mockGraphParser,
-                                     fileHandler: MockFileHandler())
+        let sut = LogExtractor(xcResultTool: mockXCResultTool,
+                               shell: MockShell(),
+                               graphParser: mockGraphParser,
+                               fileHandler: MockFileHandler(),
+                               logger: MockLogger())
+        try sut.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
+                            outputPath: nil)
         #expect(mockGraphParser.parseGraphIn == "some graph")
     }
     
@@ -31,12 +32,13 @@ struct LogExtractorTests {
         let mockGraphParser = MockGraphParser()
         mockGraphParser.parseLogsOut = []
         let mockFileHandler = MockFileHandler()
-        try LogExtractor.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
-                                     outputPath: "output_path",
-                                     xcResultTool: mockXCResultTool,
-                                     shell: MockShell(),
-                                     graphParser: mockGraphParser,
-                                     fileHandler: mockFileHandler)
+        let sut = LogExtractor(xcResultTool: mockXCResultTool,
+                               shell: MockShell(),
+                               graphParser: mockGraphParser,
+                               fileHandler: mockFileHandler,
+                               logger: MockLogger())
+        try sut.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
+                            outputPath: "output_path")
         #expect(mockGraphParser.parseGraphIn == "some graph")
         #expect(mockFileHandler.createDirPathIn == "output_path")
         // TODO: test output path is used
@@ -47,13 +49,14 @@ struct LogExtractorTests {
         mockXCResultTool.extractGraphOut = "some graph"
         let mockFileHandler = MockFileHandler()
         mockFileHandler.createDirErrorOut = TestError()
+        let sut = LogExtractor(xcResultTool: mockXCResultTool,
+                               shell: MockShell(),
+                               graphParser: MockGraphParser(),
+                               fileHandler: mockFileHandler,
+                               logger: MockLogger())
         try expectThrows {
-            try LogExtractor.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
-                                         outputPath: "output_path",
-                                         xcResultTool: mockXCResultTool,
-                                         shell: MockShell(),
-                                         graphParser: MockGraphParser(),
-                                         fileHandler: mockFileHandler)
+            try sut.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
+                                outputPath: "output_path")
         } error: {
             if case let LogExtractError.createOutputDirectoryFailed(rootError) = $0 {
                 #expect(rootError is TestError)
@@ -66,13 +69,14 @@ struct LogExtractorTests {
     @Test func extractsLogsReportsErrorExtractingGraph() async throws {
         let mockXCResultTool = MockXCResultTool()
         mockXCResultTool.extractErrorOut = TestError()
+        let sut = LogExtractor(xcResultTool: mockXCResultTool,
+                               shell: MockShell(),
+                               graphParser: MockGraphParser(),
+                               fileHandler: MockFileHandler(),
+                               logger: MockLogger())
         try expectThrows {
-            try LogExtractor.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
-                                         outputPath: nil,
-                                         xcResultTool: mockXCResultTool,
-                                         shell: MockShell(),
-                                         graphParser: MockGraphParser(),
-                                         fileHandler: MockFileHandler())
+            try sut.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
+                                outputPath: nil)
         } error: {
             #expect($0 is TestError)
         }
@@ -83,13 +87,14 @@ struct LogExtractorTests {
         mockXCResultTool.extractGraphOut = "some graph"
         let mockGraphParser = MockGraphParser()
         mockGraphParser.parseErrorOut = TestError()
+        let sut = LogExtractor(xcResultTool: mockXCResultTool,
+                               shell: MockShell(),
+                               graphParser: mockGraphParser,
+                               fileHandler: MockFileHandler(),
+                               logger: MockLogger())
         try expectThrows {
-            try LogExtractor.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
-                                         outputPath: nil,
-                                         xcResultTool: mockXCResultTool,
-                                         shell: MockShell(),
-                                         graphParser: mockGraphParser,
-                                         fileHandler: MockFileHandler())
+            try sut.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
+                                outputPath: nil)
         } error: {
             #expect($0 is TestError)
         }
@@ -101,13 +106,14 @@ struct LogExtractorTests {
         mockXCResultTool.exportErrorOut = TestError()
         let mockGraphParser = MockGraphParser()
         mockGraphParser.parseLogsOut = []
+        let sut = LogExtractor(xcResultTool: mockXCResultTool,
+                               shell: MockShell(),
+                               graphParser: mockGraphParser,
+                               fileHandler: MockFileHandler(),
+                               logger: MockLogger())
         try expectThrows {
-            try LogExtractor.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
-                                         outputPath: nil,
-                                         xcResultTool: mockXCResultTool,
-                                         shell: MockShell(),
-                                         graphParser: mockGraphParser,
-                                         fileHandler: MockFileHandler())
+            try sut.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
+                                outputPath: nil)
         } error: {
             #expect($0 is TestError)
         }
