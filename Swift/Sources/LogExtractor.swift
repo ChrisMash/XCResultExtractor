@@ -32,10 +32,8 @@ struct LogExtractor {
         }
         
         // TODO: optional graph output, or just commented out unless debugging?
-        let graphOutputPath = URL(filePath: outputPathBase)
-            .appending(component: "graph.txt")
         let graph = try xcResultTool.extractGraph(from: xcResultPath,
-                                                  outputPath: graphOutputPath,
+                                                  outputPath: URL(filePath: outputPathBase),
                                                   shell: shell,
                                                   fileHandler: fileHandler)
         

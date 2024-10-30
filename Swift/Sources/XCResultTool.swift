@@ -22,13 +22,18 @@ protocol XCResultToolInterface {
     
 }
 
+public enum ExtractError: Error {
+    case xcResultToolError(Error)
+    case noOutput
+    case errorOutput(String)
+}
+
+public enum ExportError: Error {
+    case noLogsProvided
+    case createOutputDirectoryFailed(Error)
+}
+
 struct XCResultTool: XCResultToolInterface {
-    
-    enum ExtractError: Error {
-        case xcResultToolError(Error)
-        case noOutput
-        case errorOutput(String)
-    }
     
     func extractGraph(from path: String,
                       outputPath: URL? = nil,
@@ -51,10 +56,12 @@ struct XCResultTool: XCResultToolInterface {
         }
         
         if let outputPath {
-            print("Writing graph to \(outputPath.path())")
+            let fileOutputPath = outputPath.appending(path: "graph.txt",
+                                                      directoryHint: .notDirectory)
+            print("Writing graph to \(fileOutputPath.path())")
             do {
                 try fileHandler.write(string: graph,
-                                      to: outputPath,
+                                      to: fileOutputPath,
                                       atomically: true,
                                       encoding: .utf8)
             } catch {
@@ -71,13 +78,22 @@ struct XCResultTool: XCResultToolInterface {
                 to outputPathBase: String,
                 shell: ShellInterface,
                 fileHandler: FileHandler) throws {
+        guard !logs.isEmpty else {
+            throw ExportError.noLogsProvided
+        }
+        
         let targetOutputPath = URL(fileURLWithPath: outputPathBase)
         let tmpOutputPath = targetOutputPath.appending(path: "tmp",
                                                        directoryHint: .isDirectory)
-        try fileHandler.createDirectory(atPath: tmpOutputPath.path(),
-                                        withIntermediateDirectories: true,
-                                        attributes: nil)
+        do {
+            try fileHandler.createDirectory(atPath: tmpOutputPath.path(),
+                                            withIntermediateDirectories: true,
+                                            attributes: nil)
+        } catch {
+            throw ExportError.createOutputDirectoryFailed(error)
+        }
         
+        // TODO: all these catches only logging is... fine?
         for log in logs {
             let outputPath = tmpOutputPath
                 .appending(component: "\(log.name).txt")
