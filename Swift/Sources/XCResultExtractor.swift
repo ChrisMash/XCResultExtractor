@@ -28,7 +28,7 @@ struct XCResultExtractor: ParsableCommand {
     
     mutating func run() throws {
         try LogExtractor.extractLogs(xcResultPath: xcResultPath,
-                                              outputPath: outputPath)
+                                     outputPath: outputPath)
     }
     
 }

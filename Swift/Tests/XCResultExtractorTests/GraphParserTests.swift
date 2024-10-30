@@ -11,8 +11,9 @@ import Testing
 struct GraphParserTests {
 
     @Test func testAppTestGraphParsesCorrectly() async throws {
+        let sut = GraphParser()
         let graph = try String(testAssetPath: "TestAppGraph.txt")
-        let logs = try GraphParser.parseLogs(from: graph)
+        let logs = try sut.parseLogs(from: graph)
         try #require(logs.count == 2)
         #expect(logs[0].id == "0~0Hww-uYOGMF9bqddBMEah58BmmEwS_JfHxfWSLbpZt7Nli62Ewvd63aunSOpYrYCF4K8wADFPPOqQRw5qVRxHA==")
         #expect(logs[0].name == "TestAppUITests-com.chrismash.TestApp")
@@ -21,8 +22,9 @@ struct GraphParserTests {
     }
     
     @Test func testAppTestGraphMultiParsesCorrectly() async throws {
+        let sut = GraphParser()
         let graph = try String(testAssetPath: "TestAppGraphMulti.txt")
-        let logs = try GraphParser.parseLogs(from: graph)
+        let logs = try sut.parseLogs(from: graph)
         try #require(logs.count == 4)
         #expect(logs[0].id == "0~dGqldtX5W1SsDrMqCGBhnmBsbGLcYiU3WF47VOK7WCygNTrtNxmVvRwovjOuw9RXVhqxb_AaVzAdW2Qx7SOTBA==")
         #expect(logs[0].name == "TestAppTests")
@@ -35,8 +37,9 @@ struct GraphParserTests {
     }
     
     @Test func duplicateLogNamesGraphParsesCorrectly() async throws {
+        let sut = GraphParser()
         let graph = try String(testAssetPath: "DuplicateLogNamesGraph.txt")
-        let logs = try GraphParser.parseLogs(from: graph)
+        let logs = try sut.parseLogs(from: graph)
         try #require(logs.count == 3)
         #expect(logs[0].id == "0~gutSLF4Lfhs2O8hHzzDL8Abtsp1U_lTA4Ze6dk0Pyd7Zg-T8H8MezNcgXNTn29Q3TrtPxi56v88AE6c99m1b_g==")
         #expect(logs[0].name == "TestAppUITests")
@@ -47,14 +50,16 @@ struct GraphParserTests {
     }
     
     @Test func graphWithoutStdOutputThrowsError() async throws {
+        let sut = GraphParser()
         #expect(throws: GraphParser.ParseError.logFilenameNotFound) {
-            try GraphParser.parseLogs(from: "not really a graph")
+            try sut.parseLogs(from: "not really a graph")
         }
     }
     
     @Test func graphWithoutTargetLogsThrowsError() async throws {
+        let sut = GraphParser()
         #expect(throws: GraphParser.ParseError.noDirectoriesFound) {
-            try GraphParser.parseLogs(from: "StandardOutputAndStandardError")
+            try sut.parseLogs(from: "StandardOutputAndStandardError")
         }
     }
 

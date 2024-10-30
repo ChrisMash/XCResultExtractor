@@ -13,30 +13,38 @@ struct LogExtractorTests {
 
     @Test func extractsLogsExtractsLogsFromTestAppXCResult() async throws {
         let mockXCResultTool = MockXCResultTool()
-        mockXCResultTool.extractGraphOut = try String(testAssetPath: "TestAppGraph.txt")
+        mockXCResultTool.extractGraphOut = "some graph"
+        let mockGraphParser = MockGraphParser()
+        mockGraphParser.parseLogsOut = []
         try LogExtractor.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
-                                              outputPath: nil,
-                                              xcResultTool: mockXCResultTool,
-                                              shell: MockShell(),
-                                              fileHandler: MockFileHandler())
+                                     outputPath: nil,
+                                     xcResultTool: mockXCResultTool,
+                                     shell: MockShell(),
+                                     graphParser: mockGraphParser,
+                                     fileHandler: MockFileHandler())
+        #expect(mockGraphParser.parseGraphIn == "some graph")
     }
     
     @Test func extractsLogsExtractsLogsFromTestAppXCResultAndCreatesOptionalOutputPath() async throws {
         let mockXCResultTool = MockXCResultTool()
-        mockXCResultTool.extractGraphOut = try String(testAssetPath: "TestAppGraph.txt")
+        mockXCResultTool.extractGraphOut = "some graph"
+        let mockGraphParser = MockGraphParser()
+        mockGraphParser.parseLogsOut = []
         let mockFileHandler = MockFileHandler()
         try LogExtractor.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
-                                              outputPath: "output_path",
-                                              xcResultTool: mockXCResultTool,
-                                              shell: MockShell(),
-                                              fileHandler: mockFileHandler)
+                                     outputPath: "output_path",
+                                     xcResultTool: mockXCResultTool,
+                                     shell: MockShell(),
+                                     graphParser: mockGraphParser,
+                                     fileHandler: mockFileHandler)
+        #expect(mockGraphParser.parseGraphIn == "some graph")
         #expect(mockFileHandler.createDirPathIn == "output_path")
         // TODO: test output path is used
     }
     
     @Test func extractsLogsReportsErrorCreatingOptionalOutputPath() async throws {
         let mockXCResultTool = MockXCResultTool()
-        mockXCResultTool.extractGraphOut = try String(testAssetPath: "TestAppGraph.txt")
+        mockXCResultTool.extractGraphOut = "some graph"
         let mockFileHandler = MockFileHandler()
         mockFileHandler.createDirErrorOut = TestError()
         try expectThrows {
@@ -44,6 +52,7 @@ struct LogExtractorTests {
                                          outputPath: "output_path",
                                          xcResultTool: mockXCResultTool,
                                          shell: MockShell(),
+                                         graphParser: MockGraphParser(),
                                          fileHandler: mockFileHandler)
         } error: {
             if case let LogExtractError.createOutputDirectoryFailed(rootError) = $0 {
@@ -54,9 +63,56 @@ struct LogExtractorTests {
         }
     }
     
-    // TODO: test graph extract error
-    // TODO: test graph parse error
-    // TODO: test log export error
+    @Test func extractsLogsReportsErrorExtractingGraph() async throws {
+        let mockXCResultTool = MockXCResultTool()
+        mockXCResultTool.extractErrorOut = TestError()
+        try expectThrows {
+            try LogExtractor.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
+                                         outputPath: nil,
+                                         xcResultTool: mockXCResultTool,
+                                         shell: MockShell(),
+                                         graphParser: MockGraphParser(),
+                                         fileHandler: MockFileHandler())
+        } error: {
+            #expect($0 is TestError)
+        }
+    }
+    
+    @Test func extractsLogsReportsErrorParsingGraph() async throws {
+        let mockXCResultTool = MockXCResultTool()
+        mockXCResultTool.extractGraphOut = "some graph"
+        let mockGraphParser = MockGraphParser()
+        mockGraphParser.parseErrorOut = TestError()
+        try expectThrows {
+            try LogExtractor.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
+                                         outputPath: nil,
+                                         xcResultTool: mockXCResultTool,
+                                         shell: MockShell(),
+                                         graphParser: mockGraphParser,
+                                         fileHandler: MockFileHandler())
+        } error: {
+            #expect($0 is TestError)
+        }
+    }
+    
+    @Test func extractLogsReportsErrorExporting() async throws {
+        let mockXCResultTool = MockXCResultTool()
+        mockXCResultTool.extractGraphOut = "some graph"
+        mockXCResultTool.exportErrorOut = TestError()
+        let mockGraphParser = MockGraphParser()
+        mockGraphParser.parseLogsOut = []
+        try expectThrows {
+            try LogExtractor.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
+                                         outputPath: nil,
+                                         xcResultTool: mockXCResultTool,
+                                         shell: MockShell(),
+                                         graphParser: mockGraphParser,
+                                         fileHandler: MockFileHandler())
+        } error: {
+            #expect($0 is TestError)
+        }
+    }
+    
     // TODO: test graph output as expected?
 
 }

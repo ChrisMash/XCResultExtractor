@@ -17,6 +17,7 @@ struct LogExtractor {
                             outputPath: String?,
                             xcResultTool: XCResultToolInterface = XCResultTool(),
                             shell: ShellInterface = Shell(),
+                            graphParser: GraphParserProtocol = GraphParser(),
                             fileHandler: FileHandler = DefaultFileHandler()) throws {
         print("Generating .xcresult graph...")
         
@@ -46,7 +47,7 @@ struct LogExtractor {
                                                   fileHandler: fileHandler)
         
         print("Parsing graph...")
-        let logs = try GraphParser.parseLogs(from: graph)
+        let logs = try graphParser.parseLogs(from: graph)
         print("Found \(logs.count) log(s)")
         
         try xcResultTool.export(logs: logs,

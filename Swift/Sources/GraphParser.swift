@@ -8,20 +8,24 @@
 import Foundation
 import RegexBuilder
 
+struct Log {
+    let name: String
+    let id: String
+}
+
+protocol GraphParserProtocol {
+    func parseLogs(from graph: String) throws -> [Log]
+}
+
 // TODO: Session.log useful? just combination of the two?
-struct GraphParser {
-    
-    struct Log {
-        let name: String
-        let id: String
-    }
+struct GraphParser: GraphParserProtocol {
     
     enum ParseError: Error {
         case logFilenameNotFound
         case noDirectoriesFound
     }
     
-    static func parseLogs(from graph: String) throws -> [Log] {
+    func parseLogs(from graph: String) throws -> [Log] {
         // Example graph (partial):
         //
         //  + simctl_diagnostics (directory)
@@ -54,7 +58,7 @@ struct GraphParser {
         //      - Id: 0~4VqMqsI5lOfxRppnud6-VDWcNsU8J7VgFCJfW2dXPwOcAkvU-I8Um5yp9n0Zv6nr3VmcxYggaVMDFfR0U_vjKw==
         //      - Size: 2
         
-        guard graph.contains(logFilename) else {
+        guard graph.contains(Self.logFilename) else {
             throw ParseError.logFilenameNotFound
         }
         
@@ -67,7 +71,7 @@ struct GraphParser {
         for (idx, range) in casTreeRanges.enumerated() {
             let upperBound = idx < (casTreeRanges.count - 1) ? casTreeRanges[idx+1].lowerBound : graph.index(before: graph.endIndex)
             let casTree = graph[range.lowerBound...upperBound]
-            if casTree.contains(logFilename) {
+            if casTree.contains(Self.logFilename) {
                 // TODO: all this code is probably optmisable
                 guard let idxRef = casTree.range(of: "Refs: ")?.lowerBound else {
                     print("Error trying to find start of logs, skipping target")
@@ -75,7 +79,7 @@ struct GraphParser {
                 }
                 
                 // We get the substring from "Refs: " up to the std out filename
-                guard let rangeOfLog = casTree.range(of: logFilename) else {
+                guard let rangeOfLog = casTree.range(of: Self.logFilename) else {
                     print("Error trying to find range of log, skipping target")
                     continue
                 }
@@ -86,7 +90,7 @@ struct GraphParser {
                 }
     
                 let refs = casTree[idxRef...idxRefsEnd].components(separatedBy: "+").dropFirst()
-                for (refIdx, ref) in refs.enumerated() where ref.contains(logFilename) {
+                for (refIdx, ref) in refs.enumerated() where ref.contains(Self.logFilename) {
                     // We then split on the "*" characters,
                     // which gives us an array of the file IDs we can index into
                     let ids = casTree[idxRef..<casTree.endIndex].components(separatedBy: "*")
@@ -141,8 +145,8 @@ struct GraphParser {
                         name += "-\(numMatchingNames + 1)"
                     }
                     
-                    logs.append(GraphParser.Log(name: name,
-                                                id: String(fileID)))
+                    logs.append(Log(name: name,
+                                    id: String(fileID)))
                 }
             }
         }
@@ -153,9 +157,7 @@ struct GraphParser {
     // MARK: Private
     private static let logFilename = "StandardOutputAndStandardError"
     
-    private init() {}
-    
-    private static func cleanName(_ name: String) -> String {
+    private func cleanName(_ name: String) -> String {
         // e.g. + Session-TestAppUITests-2024-04-25_185004-TPZle8.log (plainFile)
         let regex = Regex {
             "+ Session-"
@@ -179,7 +181,7 @@ struct GraphParser {
         }
     }
     
-    private static func extractBundleID(idx: Int, from lines: [String]) -> String? {
+    private func extractBundleID(idx: Int, from lines: [String]) -> String? {
         // e.g. + Session-TestAppUITests-2024-04-25_185004-TPZle8.log (plainFile)
         //      + StandardOutputAndStandardError-com.chrismash.TestApp.txt (plainFile)  <----- bundle ID included
         //      + StandardOutputAndStandardError.txt (plainFile)                        <----- bundle ID not included
@@ -190,7 +192,7 @@ struct GraphParser {
         
         let line = lines[idx]
         let regex = Regex {
-            "+ \(logFilename)-"
+            "+ \(Self.logFilename)-"
             Capture {
               ZeroOrMore(.reluctant) {
                 /./

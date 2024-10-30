@@ -14,7 +14,7 @@ protocol XCResultToolInterface {
                       shell: ShellInterface,
                       fileHandler: FileHandler) throws -> String
     
-    func export(logs: [GraphParser.Log],
+    func export(logs: [Log],
                 from xcResultPath: String,
                 to outputPathBase: String,
                 shell: ShellInterface,
@@ -73,7 +73,7 @@ struct XCResultTool: XCResultToolInterface {
     }
     
     // Note: failures to export are only logged, no errors thrown
-    func export(logs: [GraphParser.Log],
+    func export(logs: [Log],
                 from xcResultPath: String,
                 to outputPathBase: String,
                 shell: ShellInterface,
