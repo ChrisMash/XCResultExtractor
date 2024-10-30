@@ -22,13 +22,13 @@ protocol XCResultToolInterface {
     
 }
 
-public enum ExtractError: Error {
+public enum GraphExtractError: Error {
     case xcResultToolError(Error)
     case noOutput
     case errorOutput(String)
 }
 
-public enum ExportError: Error {
+public enum LogExportError: Error {
     case noLogsProvided
     case createOutputDirectoryFailed(Error)
 }
@@ -43,16 +43,16 @@ struct XCResultTool: XCResultToolInterface {
         do {
             graph = try shell.execute("xcrun xcresulttool graph --path \(path)/ --legacy")
         } catch {
-            throw ExtractError.xcResultToolError(error)
+            throw GraphExtractError.xcResultToolError(error)
         }
         
         guard !graph.isEmpty else {
-            throw ExtractError.noOutput
+            throw GraphExtractError.noOutput
         }
         
         // Example failure: "Error: File or directory doesn\'t exist at path: ../TestApp.xcresult/.\nUsage: xcresulttool <subcommand>\n  See \'xcresulttool --help\' for more information.\n"
         guard !graph.starts(with: "Error:") else {
-            throw ExtractError.errorOutput(graph)
+            throw GraphExtractError.errorOutput(graph)
         }
         
         if let outputPath {
@@ -79,7 +79,7 @@ struct XCResultTool: XCResultToolInterface {
                 shell: ShellInterface,
                 fileHandler: FileHandler) throws {
         guard !logs.isEmpty else {
-            throw ExportError.noLogsProvided
+            throw LogExportError.noLogsProvided
         }
         
         let targetOutputPath = URL(fileURLWithPath: outputPathBase)
@@ -90,7 +90,7 @@ struct XCResultTool: XCResultToolInterface {
                                             withIntermediateDirectories: true,
                                             attributes: nil)
         } catch {
-            throw ExportError.createOutputDirectoryFailed(error)
+            throw LogExportError.createOutputDirectoryFailed(error)
         }
         
         // TODO: all these catches only logging is... fine?

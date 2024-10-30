@@ -7,6 +7,10 @@
 
 import Foundation
 
+public enum LogExtractError: Error {
+    case createOutputDirectoryFailed(Error)
+}
+
 struct LogExtractor {
     
     static func extractLogs(xcResultPath: String,
@@ -21,9 +25,13 @@ struct LogExtractor {
         if let outputPath {
             outputPathBase = outputPath
             // Create the directory if it doesn't exist
-            try fileHandler.createDirectory(atPath: outputPathBase,
-                                            withIntermediateDirectories: true,
-                                            attributes: nil)
+            do {
+                try fileHandler.createDirectory(atPath: outputPathBase,
+                                                withIntermediateDirectories: true,
+                                                attributes: nil)
+            } catch {
+                throw LogExtractError.createOutputDirectoryFailed(error)
+            }
         } else {
             let pathURL = URL(filePath: xcResultPath)
             outputPathBase = pathURL

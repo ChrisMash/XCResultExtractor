@@ -9,8 +9,6 @@ import Testing
 import Foundation
 @testable import XCResultExtractor
 
-struct TestError: Error {}
-
 struct XCResultToolTests {
 
     // MARK: extractGraph
@@ -56,7 +54,7 @@ struct XCResultToolTests {
                                  shell: mockShell,
                                  fileHandler: MockFileHandler())
         } error: {
-            if case let ExtractError.xcResultToolError(rootError) = $0 {
+            if case let GraphExtractError.xcResultToolError(rootError) = $0 {
                 #expect(rootError is TestError)
             } else {
                 #expect(Bool(false), "Unexpected error: \($0)")
@@ -74,7 +72,7 @@ struct XCResultToolTests {
                                  shell: mockShell,
                                  fileHandler: MockFileHandler())
         } error: {
-            let extractError = try #require($0 as? ExtractError)
+            let extractError = try #require($0 as? GraphExtractError)
             switch extractError {
             case .noOutput:
                 #expect(Bool(true))
@@ -94,7 +92,7 @@ struct XCResultToolTests {
                                  shell: mockShell,
                                  fileHandler: MockFileHandler())
         } error: {
-            let extractError = try #require($0 as? ExtractError)
+            let extractError = try #require($0 as? GraphExtractError)
             switch extractError {
             case .errorOutput("Error:"):
                 #expect(Bool(true))
@@ -155,7 +153,7 @@ struct XCResultToolTests {
                            shell: MockShell(),
                            fileHandler: mockFileHandler)
         } error: {
-            if case let ExportError.createOutputDirectoryFailed(rootError) = $0 {
+            if case let LogExportError.createOutputDirectoryFailed(rootError) = $0 {
                 #expect(rootError is TestError)
             } else {
                 #expect(Bool(false), "Unexpected error: \($0)")
@@ -174,7 +172,7 @@ struct XCResultToolTests {
                            shell: MockShell(),
                            fileHandler: MockFileHandler())
         } error: {
-            let exportError = try #require($0 as? ExportError)
+            let exportError = try #require($0 as? LogExportError)
             switch exportError {
             case .noLogsProvided:
                 #expect(Bool(true))
@@ -185,26 +183,5 @@ struct XCResultToolTests {
     }
     
     // TODO: test export logs more (logging of failures)
-    
-    // MARK: Private
-    private func expectThrows(_ closure: () throws -> Any,
-                              error errorMatcher: (Error) throws -> Void,
-                              sourceLocation: SourceLocation = #_sourceLocation) throws {
-//        #expect(throws: XCResultTool.ExtractError.xcResultToolError(TestError())) {
-//            try sut.extractGraph(from: "some path",
-//                                 shell: mockShell,
-//                                 fileHandler: MockFileHandler())
-//        }
-        
-        // Above doesn't match properly, so doing it this way!
-        do {
-            let _ = try closure()
-            #expect(Bool(false),
-                    "Expected error to be thrown, but wasn't",
-                    sourceLocation: sourceLocation)
-        } catch {
-            try errorMatcher(error)
-        }
-    }
     
 }
