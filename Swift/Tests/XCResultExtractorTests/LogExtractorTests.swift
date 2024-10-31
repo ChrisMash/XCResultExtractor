@@ -58,7 +58,7 @@ struct LogExtractorTests {
             try sut.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
                                 outputPath: "output_path")
         } error: {
-            if case let LogExtractError.createOutputDirectoryFailed(rootError) = $0 {
+            if case let LogExtractor.ExtractError.createOutputDirectoryFailed(rootError) = $0 {
                 #expect(rootError is TestError)
             } else {
                 #expect(Bool(false), "Unexpected error: \($0)")

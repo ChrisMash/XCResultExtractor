@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import XCResultExtractor
+@testable import XCResultExtractor
 
 class MockFileHandler: FileHandlerInterface {
     

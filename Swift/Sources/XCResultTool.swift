@@ -18,23 +18,18 @@ protocol XCResultToolInterface {
     
 }
 
-public enum GraphExtractError: Error {
-    case xcResultToolError(Error)
-    case noOutput
-    case errorOutput(String)
-}
-
-public enum LogExportError: Error {
-    case noLogsProvided
-    case createOutputDirectoryFailed(Error)
-}
-
 struct XCResultTool: XCResultToolInterface {
     
     let shell: ShellInterface
     let fileHandler: FileHandlerInterface
     let logger: LoggerInterface
     
+    enum GraphExtractError: Error {
+        case xcResultToolError(Error)
+        case noOutput
+        case errorOutput(String)
+    }
+
     func extractGraph(from path: String,
                       outputPath: URL? = nil) throws -> String {
         let graph: String
@@ -68,6 +63,11 @@ struct XCResultTool: XCResultToolInterface {
         }
         
         return graph
+    }
+    
+    enum LogExportError: Error {
+        case noLogsProvided
+        case createOutputDirectoryFailed(Error)
     }
     
     // Note: failures to export are only logged, no errors thrown

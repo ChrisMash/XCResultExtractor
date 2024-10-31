@@ -53,7 +53,7 @@ struct XCResultToolTests {
         try expectThrows {
             try sut.extractGraph(from: "some path")
         } error: {
-            if case let GraphExtractError.xcResultToolError(rootError) = $0 {
+            if case let XCResultTool.GraphExtractError.xcResultToolError(rootError) = $0 {
                 #expect(rootError is TestError)
             } else {
                 #expect(Bool(false), "Unexpected error: \($0)")
@@ -71,7 +71,7 @@ struct XCResultToolTests {
         try expectThrows {
             try sut.extractGraph(from: "some path")
         } error: {
-            let extractError = try #require($0 as? GraphExtractError)
+            let extractError = try #require($0 as? XCResultTool.GraphExtractError)
             switch extractError {
             case .noOutput:
                 #expect(Bool(true))
@@ -90,7 +90,7 @@ struct XCResultToolTests {
         try expectThrows {
             try sut.extractGraph(from: "some path")
         } error: {
-            let extractError = try #require($0 as? GraphExtractError)
+            let extractError = try #require($0 as? XCResultTool.GraphExtractError)
             switch extractError {
             case .errorOutput("Error:"):
                 #expect(Bool(true))
@@ -151,7 +151,7 @@ struct XCResultToolTests {
                            from: "path_to.xcresult",
                            to: "output_path")
         } error: {
-            if case let LogExportError.createOutputDirectoryFailed(rootError) = $0 {
+            if case let XCResultTool.LogExportError.createOutputDirectoryFailed(rootError) = $0 {
                 #expect(rootError is TestError)
             } else {
                 #expect(Bool(false), "Unexpected error: \($0)")
@@ -170,7 +170,7 @@ struct XCResultToolTests {
                            from: "path_to.xcresult",
                            to: "output_path")
         } error: {
-            let exportError = try #require($0 as? LogExportError)
+            let exportError = try #require($0 as? XCResultTool.LogExportError)
             switch exportError {
             case .noLogsProvided:
                 #expect(Bool(true))

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol FileHandlerInterface {
+protocol FileHandlerInterface {
 
     func createDirectory(atPath path: String,
                          withIntermediateDirectories createIntermediates: Bool,
@@ -26,15 +26,15 @@ public protocol FileHandlerInterface {
 }
 
 // TODO: UTs
-public struct FileHandler: FileHandlerInterface {
+struct FileHandler: FileHandlerInterface {
     
     enum FileError: Error {
         case failedToEnumerateDirectory
     }
     
-    public func createDirectory(atPath path: String,
-                                withIntermediateDirectories createIntermediates: Bool,
-                                attributes: [FileAttributeKey:Any]?) throws {
+    func createDirectory(atPath path: String,
+                         withIntermediateDirectories createIntermediates: Bool,
+                         attributes: [FileAttributeKey:Any]?) throws {
         if !FileManager.default.fileExists(atPath: path) {
             try FileManager.default.createDirectory(atPath: path,
                                                     withIntermediateDirectories: createIntermediates,
@@ -43,8 +43,8 @@ public struct FileHandler: FileHandlerInterface {
     }
     
     /// Moves files at the source directory to the destination directory. Replacing any duplicate files.
-    public func moveItems(from source: URL,
-                          to destination: URL) throws {
+    func moveItems(from source: URL,
+                   to destination: URL) throws {
         let fm = FileManager.default
         guard let enumerator = fm.enumerator(at: source, includingPropertiesForKeys: nil) else {
             throw FileError.failedToEnumerateDirectory
@@ -63,14 +63,14 @@ public struct FileHandler: FileHandlerInterface {
         
     }
     
-    public func removeItem(at path: URL) throws {
+    func removeItem(at path: URL) throws {
         try FileManager.default.removeItem(at: path)
     }
     
-    public func write(string: String,
-                      to path: URL,
-                      atomically: Bool,
-                      encoding: String.Encoding) throws {
+    func write(string: String,
+               to path: URL,
+               atomically: Bool,
+               encoding: String.Encoding) throws {
         try string.write(to: path,
                          atomically: atomically,
                          encoding: encoding)

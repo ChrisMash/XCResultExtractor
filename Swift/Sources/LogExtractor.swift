@@ -7,10 +7,6 @@
 
 import Foundation
 
-public enum LogExtractError: Error {
-    case createOutputDirectoryFailed(Error)
-}
-
 struct LogExtractor {
     
     let xcResultTool: XCResultToolInterface
@@ -18,6 +14,10 @@ struct LogExtractor {
     let graphParser: GraphParserInterface
     let fileHandler: FileHandlerInterface
     let logger: LoggerInterface
+    
+    enum ExtractError: Error {
+        case createOutputDirectoryFailed(Error)
+    }
     
     func extractLogs(xcResultPath: String,
                      outputPath: String?) throws {
@@ -33,7 +33,7 @@ struct LogExtractor {
                                                 withIntermediateDirectories: true,
                                                 attributes: nil)
             } catch {
-                throw LogExtractError.createOutputDirectoryFailed(error)
+                throw ExtractError.createOutputDirectoryFailed(error)
             }
         } else {
             let pathURL = URL(filePath: xcResultPath)
