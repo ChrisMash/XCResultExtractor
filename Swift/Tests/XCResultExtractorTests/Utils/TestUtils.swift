@@ -28,3 +28,12 @@ func expectThrows(_ closure: () throws -> Any,
         try errorMatcher(error)
     }
 }
+
+let testAssets = [
+    "DuplicateLogNamesGraph.txt",
+    "TestApp.xcresult",
+    "TestAppGraph.txt",
+    "TestAppGraphMulti.txt",
+    "TestAppMulti.xcresult",
+    ".DS_Store"
+]

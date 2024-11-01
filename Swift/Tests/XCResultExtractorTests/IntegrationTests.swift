@@ -9,80 +9,55 @@ import Testing
 import Foundation
 @testable import XCResultExtractor
 
+@Suite(.serialized)
 struct IntegrationTests {
 
     @Test func extractsLogsExtractsLogsFromTestAppMultiXCResult() async throws {
         let sut = makeSUT()
         try sut.extractLogs(xcResultPath: URL.testAsset(path: "TestAppMulti.xcresult").path(),
                             outputPath: nil)
-        let fm = FileManager.default
         // Check tmp directory not present
         let testAssetsDir = URL.testAssetDir()
-        #expect(!fm.fileExists(atPath: testAssetsDir.appending(path: "tmp",
-                                                               directoryHint: .isDirectory).path()))
+        let tmpPath = testAssetsDir.appending(path: "tmp",
+                                              directoryHint: .isDirectory).path()
+        #expect(!FileManager.default.fileExists(atPath: tmpPath))
         // Check expected files present (and delete them)
-        let expectedFiles = [
+        try expectFiles([
             // Graph
-            (testAssetsDir.appending(path: "graph.txt",
-                                     directoryHint: .notDirectory).path(),
-             "StandardOutputAndStandardError"),
-            // UI test logs? TODO: unexpected?
-            (testAssetsDir.appending(path: "TestAppUITests.txt",
-                                     directoryHint: .notDirectory).path(),
-             "*** If you believe this error represents a bug"),
+            ("graph.txt", "StandardOutputAndStandardError"),
+            // UI test logs?
+            ("TestAppUITests.txt", "*** If you believe this error represents a bug"),
             // UI test logs
-            (testAssetsDir.appending(path: "TestAppUITests-2.txt",
-                                     directoryHint: .notDirectory).path(),
-             "TestAppUITests-Runner"),
+            ("TestAppUITests-2.txt", "TestAppUITests-Runner"),
             // Test app logs (from UI tests)
-            (testAssetsDir.appending(path: "TestAppUITests-com.chrismash.TestApp.txt",
-                                     directoryHint: .notDirectory).path(),
-             "App initialised"),
+            ("TestAppUITests-com.chrismash.TestApp.txt", "App initialised"),
             // UT logs
-            (testAssetsDir.appending(path: "TestAppTests.txt",
-                                     directoryHint: .notDirectory).path(),
-             "App initialised")
-        ] // TODO: check for unexpected files?
-        
-        for (path, contents) in expectedFiles {
-            #expect(fm.fileExists(atPath: path))
-            let file = try String(contentsOf: URL(fileURLWithPath: path))
-            #expect(file.contains(contents))
-            try? fm.removeItem(atPath: path) // TODO: dangerous, might delete expected assets if they have a matching name?
-        }
+            ("TestAppTests.txt", "App initialised")
+        ],
+                        in: testAssetsDir,
+                        others: testAssets)
     }
     
     @Test func extractsLogsExtractsLogsFromTestAppXCResult() async throws {
         let sut = makeSUT()
         try sut.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
                             outputPath: nil)
-        let fm = FileManager.default
         // Check tmp directory not present
         let testAssetsDir = URL.testAssetDir()
-        #expect(!fm.fileExists(atPath: testAssetsDir.appending(path: "tmp",
-                                                               directoryHint: .isDirectory).path()))
+        let tmpPath = testAssetsDir.appending(path: "tmp",
+                                              directoryHint: .isDirectory).path()
+        #expect(!FileManager.default.fileExists(atPath: tmpPath))
         // Check expected files present (and delete them)
-        let expectedFiles = [
+        try expectFiles([
             // Graph
-            (testAssetsDir.appending(path: "graph.txt",
-                                     directoryHint: .notDirectory).path(),
-             "StandardOutputAndStandardError"),
+            ("graph.txt", "StandardOutputAndStandardError"),
             // UI test logs
-            (testAssetsDir.appending(path: "TestAppUITests.txt",
-                                     directoryHint: .notDirectory).path(),
-             "TestAppUITests-Runner"),
+            ("TestAppUITests.txt", "TestAppUITests-Runner"),
             // Test app logs (from UI tests)
-            (testAssetsDir.appending(path: "TestAppUITests-com.chrismash.TestApp.txt",
-                                     directoryHint: .notDirectory).path(),
-             "App initialised")
-        ] // TODO: check for unexpected files?
-        
-        for (path, contents) in expectedFiles {
-            #expect(fm.fileExists(atPath: path))
-            let file = try String(contentsOf: URL(fileURLWithPath: path))
-            #expect(file.contains(contents))
-            try? fm.removeItem(atPath: path) // TODO: dangerous, might delete expected assets if they have a matching name?
-        }
+            ("TestAppUITests-com.chrismash.TestApp.txt", "App initialised")
+        ],
+                        in: testAssetsDir,
+                        others: testAssets)
     }
     
     @Test func extractsLogsExtractsLogsFromTestAppXCResultToOutputpath() async throws {
@@ -90,30 +65,21 @@ struct IntegrationTests {
         let outputPath = URL.testAssetDir().appending(path: "test")
         try sut.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
                             outputPath: outputPath.path())
-        let fm = FileManager.default
         // Check tmp directory not present
-        #expect(!fm.fileExists(atPath: outputPath.appending(path: "tmp",
-                                                            directoryHint: .isDirectory).path()))
+        let fm = FileManager.default
+        let tmpPath = outputPath.appending(path: "tmp",
+                                           directoryHint: .isDirectory).path()
+        #expect(!fm.fileExists(atPath: tmpPath))
+        
         // Check expected files present (and delete them)
-        let expectedFiles = [
-            (outputPath.appending(path: "graph.txt",
-                                  directoryHint: .notDirectory).path(),
-             "StandardOutputAndStandardError"),
-            (outputPath.appending(path: "TestAppUITests.txt",
-                                  directoryHint: .notDirectory).path(),
-             "TestAppUITests-Runner"),
-            (outputPath.appending(path: "TestAppUITests-com.chrismash.TestApp.txt",
-                                  directoryHint: .notDirectory).path(),
-             "App initialised")
-        ]
+        try expectFiles([
+            ("graph.txt", "StandardOutputAndStandardError"),
+            ("TestAppUITests.txt", "TestAppUITests-Runner"),
+            ("TestAppUITests-com.chrismash.TestApp.txt", "App initialised")
+        ],
+                        in: outputPath)
         
-        for (path, contents) in expectedFiles {
-            #expect(fm.fileExists(atPath: path))
-            let file = try String(contentsOf: URL(fileURLWithPath: path))
-            #expect(file.contains(contents))
-            try? fm.removeItem(atPath: path)
-        }
-        
+        // Remove the output path
         try? fm.removeItem(atPath: outputPath.path())
     }
     
@@ -130,5 +96,53 @@ struct IntegrationTests {
                             fileHandler: fileHandler,
                             logger: logger)
     }
+    
+    /// Checks the expected files exist with the expected content in the specified directory, deleting them afterwards.
+    /// Takes an array of other filenames expected in the directory to check the expected total count. These files won't be deleted.
+    private func expectFiles(_ expectedFiles: [(String, String)],
+                             in dir: URL,
+                             others otherFiles: [String] = [],
+                             sourceLocation: SourceLocation = #_sourceLocation) throws {
+        let fm = FileManager.default
+        var files = try fm.contentsOfDirectory(at: dir,
+                                               includingPropertiesForKeys: nil)
+        #expect(files.count == expectedFiles.count + otherFiles.count, sourceLocation: sourceLocation)
+        for (filename, contents) in expectedFiles {
+            let path = dir.appending(path: filename,
+                                     directoryHint: .notDirectory)
+            #expect(files.contains { $0 == path },
+                    sourceLocation: sourceLocation)
+            let file = try String(contentsOf: path)
+            #expect(file.contains(contents),
+                    sourceLocation: sourceLocation)
+            let deletingTestAsset = testAssets.contains(where: {
+                path.lastPathComponent == $0
+            })
+            guard !deletingTestAsset else {
+                #expect(Bool(false), "Trying to delete a test asset",
+                        sourceLocation: sourceLocation)
+                return
+            }
+            try? fm.removeItem(atPath: path.path())
+            
+            guard let idx = files.firstIndex(of: path) else {
+                #expect(Bool(false), "")
+                continue
+            }
+            files.remove(at: idx)
+        }
+        
+        #expect(otherFiles.containsSameElements(as: files.map { $0.lastPathComponent }),
+                sourceLocation: sourceLocation)
+    }
+    
+}
 
+extension Array where Element: Comparable {
+    
+    func containsSameElements(as other: [Element]) -> Bool {
+        count == other.count
+        && sorted() == other.sorted()
+    }
+    
 }

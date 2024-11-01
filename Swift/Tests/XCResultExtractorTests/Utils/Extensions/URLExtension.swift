@@ -19,7 +19,11 @@ extension URL {
     
     static func testAsset(path: String,
                           sourceLocation: SourceLocation = #_sourceLocation) -> URL {
-        URL.testAssetDir(sourceLocation: sourceLocation)
+        guard testAssets.contains(where: { $0 == path }) else {
+            fatalError("Trying to load an unknown test asset")
+        }
+        
+        return URL.testAssetDir(sourceLocation: sourceLocation)
             .appending(path: path)
     }
     
