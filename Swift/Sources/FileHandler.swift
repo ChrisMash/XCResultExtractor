@@ -25,7 +25,6 @@ protocol FileHandlerInterface {
     
 }
 
-// TODO: UTs
 struct FileHandler: FileHandlerInterface {
     
     enum FileError: Error {

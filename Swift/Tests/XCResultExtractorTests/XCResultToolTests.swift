@@ -180,6 +180,60 @@ struct XCResultToolTests {
         }
     }
     
-    // TODO: test export logs more (logging of failures)
+    @Test func exportLogsToolErrors() async throws {
+        let mockShell = MockShell()
+        mockShell.executeErrorOut = TestError()
+        let mockLogger = MockLogger()
+        let sut = XCResultTool(shell: mockShell,
+                               fileHandler: MockFileHandler(),
+                               logger: mockLogger)
+        try sut.export(logs: [
+            Log(name: "some_name",
+                id: "an_id")
+        ],
+                       from: "path_to.xcresult",
+                       to: "output_path")
+        try #require(mockLogger.messages.count == 1)
+        #expect(mockLogger.messages[0] == "Error exporting some_name: TestError()")
+    }
+    
+    @Test func exportLogsToolErrorOutput() async throws {
+        let mockShell = MockShell()
+        mockShell.executeOutput = "Something's gone wrong..."
+        let mockLogger = MockLogger()
+        let sut = XCResultTool(shell: mockShell,
+                               fileHandler: MockFileHandler(),
+                               logger: mockLogger)
+        try sut.export(logs: [
+            Log(name: "some_name",
+                id: "an_id")
+        ],
+                       from: "path_to.xcresult",
+                       to: "output_path")
+        try #require(mockLogger.messages.count == 1)
+        #expect(mockLogger.messages[0] == "Error exporting some_name:\nSomething's gone wrong...")
+    }
+    
+    @Test func exportLogsFileHandlerErrors() async throws {
+        let mockShell = MockShell()
+        mockShell.executeOutput = "Exported file with id "
+        let mockFileHandler = MockFileHandler()
+        mockFileHandler.moveItemsErrorOut = TestError()
+        mockFileHandler.removeItemErrorOut = TestError()
+        let mockLogger = MockLogger()
+        let sut = XCResultTool(shell: mockShell,
+                               fileHandler: mockFileHandler,
+                               logger: mockLogger)
+        try sut.export(logs: [
+            Log(name: "some_name",
+                id: "an_id")
+        ],
+                       from: "path_to.xcresult",
+                       to: "output_path")
+        try #require(mockLogger.messages.count == 3)
+        #expect(mockLogger.messages[0] == "Exported output_path/some_name.txt")
+        #expect(mockLogger.messages[1] == "Error moving items from tmp folder output_path/tmp/ to output_path/: TestError()")
+        #expect(mockLogger.messages[2] == "Error removing tmp folder output_path/tmp/: TestError()")
+    }
     
 }

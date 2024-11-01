@@ -89,24 +89,29 @@ struct XCResultTool: XCResultToolInterface {
             throw LogExportError.createOutputDirectoryFailed(error)
         }
         
-        // TODO: all these catches only logging is... fine?
         for log in logs {
+            let logFilename = "\(log.name).txt"
             let outputPath = tmpOutputPath
-                .appending(component: "\(log.name).txt")
+                .appending(component: logFilename,
+                           directoryHint: .notDirectory)
                 .path(percentEncoded: true)
             let cmdOutput: String
             do {
                 cmdOutput = try shell.execute("xcrun xcresulttool export --type file --path \(xcResultPath)/ --output-path \(outputPath) --id \(log.id) --legacy")
             } catch {
-                logger.log("Error exporting log: \(error)")
+                logger.log("Error exporting \(log.name): \(error)")
                 continue
             }
             
             if !cmdOutput.starts(with: "Exported file with id ") {
-                logger.log("Error exporting \(outputPath):\n \(cmdOutput)")
+                logger.log("Error exporting \(log.name):\n\(cmdOutput)")
                 continue
             } else {
-                logger.log("Exported \(outputPath)")
+                let targetPath = targetOutputPath
+                    .appending(component: logFilename,
+                               directoryHint: .notDirectory)
+                    .path()
+                logger.log("Exported \(targetPath)")
             }
         }
         
@@ -114,13 +119,13 @@ struct XCResultTool: XCResultToolInterface {
             try fileHandler.moveItems(from: tmpOutputPath,
                                       to: targetOutputPath)
         } catch {
-            logger.log("Error moving items from tmp folder \(tmpOutputPath) to \(targetOutputPath): \(error)")
+            logger.log("Error moving items from tmp folder \(tmpOutputPath.path()) to \(targetOutputPath.path()): \(error)")
         }
         
         do {
             try fileHandler.removeItem(at: tmpOutputPath)
         } catch {
-            logger.log("Error removing tmp folder \(tmpOutputPath): \(error)")
+            logger.log("Error removing tmp folder \(tmpOutputPath.path()): \(error)")
         }
     }
     
