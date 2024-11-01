@@ -10,7 +10,7 @@ import ArgumentParser
 
 // TODO: usage example says the executable is xc-result-extractor but it's actually XCResultExtractor?
 // TODO: loads of comments
-// TODO: consistent URL/String for paths?
+// TODO: consistent URL/String for paths? (and URL(filePath:) vs URL(fileURLWithPath:))
 // TODO: rename TestApp to ExampleApp
 // TODO: check for TODOs in testapp
 // TODO: make sure readme explains how to get the different test Assets generated

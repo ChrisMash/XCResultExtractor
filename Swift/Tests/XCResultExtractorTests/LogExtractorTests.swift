@@ -24,6 +24,7 @@ struct LogExtractorTests {
         try sut.extractLogs(xcResultPath: URL.testAsset(path: "TestApp.xcresult").path(),
                             outputPath: nil)
         #expect(mockGraphParser.parseGraphIn == "some graph")
+        #expect(mockXCResultTool.extractOutputPathIn == .testAssetDir())
     }
     
     @Test func extractsLogsExtractsLogsFromTestAppXCResultAndCreatesOptionalOutputPath() async throws {
@@ -41,7 +42,7 @@ struct LogExtractorTests {
                             outputPath: "output_path")
         #expect(mockGraphParser.parseGraphIn == "some graph")
         #expect(mockFileHandler.createDirPathIn == "output_path")
-        // TODO: test output path is used
+        #expect(mockXCResultTool.extractOutputPathIn == URL(filePath: "output_path"))
     }
     
     @Test func extractsLogsReportsErrorCreatingOptionalOutputPath() async throws {
@@ -118,7 +119,5 @@ struct LogExtractorTests {
             #expect($0 is TestError)
         }
     }
-    
-    // TODO: test graph output as expected?
 
 }
