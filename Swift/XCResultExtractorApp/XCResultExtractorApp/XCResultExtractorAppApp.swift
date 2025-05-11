@@ -20,9 +20,11 @@ struct XCResultExtractorAppApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView(viewModel: viewModel)
-                .onDrop(of: [.fileURL],
-                        delegate: fileDropDelegate)
+            if viewModel.logs.isEmpty {
+                DropperView(delegate: fileDropDelegate)
+            } else {
+                ContentView(viewModel: viewModel)
+            }
         }
     }
     
