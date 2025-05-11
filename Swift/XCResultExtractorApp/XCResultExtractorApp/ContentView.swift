@@ -8,15 +8,18 @@
 import SwiftUI
 
 struct ContentView: View {
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
+        VStack(spacing: 10) {
+            Image(systemName: "document.badge.plus")
                 .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+                .font(.title)
+            Text("Drag an .xcresult file here!")
+                .font(.headline)
         }
-        .padding()
+        // TODO: do an openFileDialog too?
     }
+    
 }
 
 #Preview {
