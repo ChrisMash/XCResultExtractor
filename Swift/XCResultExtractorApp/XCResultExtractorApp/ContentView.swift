@@ -12,19 +12,11 @@ struct ContentView: View {
     let viewModel: ViewModelInterface
     
     var body: some View {
-        TabView {
+        TabView { // TODO: a bit laggy changing tabs, may be very laggy with 100k logs?
             ForEach(viewModel.logs) { log in
-                Tab(log.filename, // TODO: gets cut off? useful to give it a meaningful name anyway
+                Tab(log.filename, // TODO: give it a more meaningful name?
                     systemImage: "list.bullet.rectangle") {
-                    ScrollView {
-                        Text(log.content)
-                            .multilineTextAlignment(.leading)
-                            .textSelection(.enabled)
-                            .frame(maxWidth: .infinity,
-                                   maxHeight: .infinity,
-                                   alignment: .leading)
-                            .padding()
-                    }
+                    LogView(log: log)
                     // TODO: button to get hold of the file (export or folder open)
                 }
             }

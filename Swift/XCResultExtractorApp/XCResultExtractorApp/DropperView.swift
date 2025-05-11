@@ -15,7 +15,7 @@ struct DropperView: View {
         VStack(spacing: 10) {
             Image(systemName: "document.badge.plus")
                 .imageScale(.large)
-                .font(.title)
+                .font(.largeTitle)
             Text("Drag an .xcresult file here!")
                 .font(.headline)
         }

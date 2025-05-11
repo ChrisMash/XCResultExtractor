@@ -35,7 +35,12 @@ extension ViewModel: FileDropDelegate.FileReceiver {
             do {
                 let content = try String(contentsOf: $0,
                                          encoding: .utf8)
-                logs.append(LogInfo(filename: $0.lastPathComponent.components(separatedBy: ".")[0],
+                // The filename is likely to be something like "TestAppUITests-com.chrismash.TestApp.txt".
+                // The following drops off the file extension, in perhaps a roundabout way
+                let filenameComponents = $0.lastPathComponent.components(separatedBy: ".")
+                let componentRangeWithoutExt = filenameComponents.startIndex..<filenameComponents.endIndex.advanced(by: -1)
+                let filename = filenameComponents[componentRangeWithoutExt].joined(separator: ".")
+                logs.append(LogInfo(filename: filename,
                                     content: content))
             } catch {
                 print("Failed to load \($0): \(error)")
