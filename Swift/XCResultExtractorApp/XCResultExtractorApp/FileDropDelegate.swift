@@ -12,26 +12,49 @@ import XCResultTool
 class FileDropDelegate: DropDelegate {
     
     protocol FileReceiver {
-        func filesReceived(_ files: [URL])
+        func received(files: [URL])
+        func received(error: Error)
+    }
+    
+    enum Error: Swift.Error {
+        case noProvider
+        case itemLoadFailed(Swift.Error)
+        case dataNotProvided
+        case urlConversionFailed
+        case logExtractionFailed(Swift.Error)
     }
     
     var fileReceiver: (any FileReceiver)?
     
     func performDrop(info: DropInfo) -> Bool {
         Task {
+            guard let fileReceiver else {
+                print("ERROR: no file receiver set")
+                return
+            }
+            
             let providers = info.itemProviders(for: [.fileURL])
             do {
-                let item = try await providers.first!.loadItem(forTypeIdentifier: UTType.fileURL.identifier)
-                guard let data = item as? Data else {
-                    print("ERROR: Loaded item was not Data: \(type(of: item))")
+                guard let provider = providers.first else {
+                    fileReceiver.received(error: Error.noProvider)
                     return
                 }
+                
+                let item = try await provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier)
+                guard let data = item as? Data else {
+                    print("ERROR: Loaded item was not Data: \(type(of: item))")
+                    fileReceiver.received(error: Error.dataNotProvided)
+                    return
+                }
+                
                 guard let url = URL(dataRepresentation: data,
                                     relativeTo: nil,
                                     isAbsolute: true) else {
                     print("ERROR: Failed to convert data to URL: \(data)")
-                    return // TODO: show errors in UI
+                    fileReceiver.received(error: Error.urlConversionFailed)
+                    return
                 }
+                
                 print("Loading \(url)")
                 // TODO: hand off to VM?
                 
@@ -69,18 +92,15 @@ class FileDropDelegate: DropDelegate {
                         }
                     }
                     
-                    guard let fileReceiver else {
-                        print("ERROR: no file receiver set")
-                        return
-                    }
-                    
-                    fileReceiver.filesReceived(files)
+                    fileReceiver.received(files: files)
                 } catch {
                     print("ERROR: Failed to extract logs: \(error)")
+                    fileReceiver.received(error: Error.logExtractionFailed(error))
                     return
                 }
             } catch {
                 print("ERROR: Failed to load item: \(error)")
+                fileReceiver.received(error: Error.itemLoadFailed(error))
             }
         }
         

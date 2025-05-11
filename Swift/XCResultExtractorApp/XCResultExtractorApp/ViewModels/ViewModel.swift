@@ -28,9 +28,26 @@ struct LogInfo: Identifiable {
     
 }
 
+enum ViewModelState {
+    
+    case idle
+    case logsLoaded([LogInfo])
+    case error(Error)
+    
+    var logs: [LogInfo]? {
+        switch self {
+        case .logsLoaded(let logs):
+            return logs
+        default:
+            return nil
+        }
+    }
+    
+}
+
 protocol ViewModelInterface {
     
-    var logs: [LogInfo] { get }
+    var state: ViewModelState { get }
     
     func closeLogs()
     func revealLogsInFinder()
@@ -40,13 +57,17 @@ protocol ViewModelInterface {
 @Observable
 class ViewModel: ViewModelInterface {
     
-    private(set) var logs: [LogInfo] = [] // TODO: can be modified externally?
+    private(set) var state: ViewModelState = .idle
     
     func closeLogs() {
-        logs = []
+        state = .idle
     }
     
     func revealLogsInFinder() {
+        guard let logs = state.logs else {
+            fatalError()
+        }
+        
         logs[0]
             .filepath
             .deletingLastPathComponent()
@@ -57,7 +78,8 @@ class ViewModel: ViewModelInterface {
 
 extension ViewModel: FileDropDelegate.FileReceiver {
     
-    func filesReceived(_ files: [URL]) {
+    func received(files: [URL]) {
+        var logs: [LogInfo] = []
         files.forEach {
             do {
                 let content = try String(contentsOf: $0,
@@ -65,8 +87,18 @@ extension ViewModel: FileDropDelegate.FileReceiver {
                 logs.append(LogInfo(filepath: $0,
                                     content: content))
             } catch {
-                print("Failed to load \($0): \(error)")
+                print("ERROR: Failed to load \($0): \(error)") // TODO: show in UI?
             }
+        }
+        
+        Task { @MainActor in
+            state = .logsLoaded(logs)
+        }
+    }
+    
+    func received(error: FileDropDelegate.Error) {
+        Task { @MainActor in
+            state = .error(error)
         }
     }
     

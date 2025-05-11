@@ -20,10 +20,18 @@ struct XCResultExtractorAppApp: App {
     
     var body: some Scene {
         WindowGroup {
-            if viewModel.logs.isEmpty {
+            switch viewModel.state {
+            case .idle:
                 DropperView(delegate: fileDropDelegate)
-            } else {
+            case .logsLoaded(_):
                 ContentView(viewModel: viewModel)
+            case .error(let error):
+                VStack {
+                    DropperView(delegate: fileDropDelegate)
+                    
+                    ErrorView(error: error)
+                        .padding()
+                }
             }
         }
     }

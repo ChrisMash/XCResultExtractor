@@ -13,6 +13,9 @@ struct LogView: View {
     
     var body: some View {
         ScrollView {
+            // TODO: show line numbers?
+            // TODO: searchable (jump to specific lines, by regex?)
+            // TODO: filterable (show/hide specific lines, by regex?)
             Text(log.content)
                 .multilineTextAlignment(.leading)
                 .textSelection(.enabled)
