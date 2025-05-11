@@ -11,6 +11,7 @@ import SwiftUI
 struct XCResultExtractorAppApp: App {
     
     private let fileDropDelegate = FileDropDelegate()
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     
     var body: some Scene {
         WindowGroup {
