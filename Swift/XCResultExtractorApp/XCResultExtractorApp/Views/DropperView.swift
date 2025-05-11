@@ -24,7 +24,6 @@ struct DropperView: View {
         .onDrop(of: [.fileURL],
                 delegate: delegate)
         // TODO: do an openFileDialog too?
-        // TODO: how to load new xcresult? close button? on each tab?
     }
     
 }

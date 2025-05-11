@@ -27,6 +27,6 @@ struct LogView: View {
 
 
 #Preview {
-    LogView(log: LogInfo(filename: "filename",
+    LogView(log: LogInfo(filepath: URL(filePath: "filepath/not-valid.txt"),
                          content: "Some content"))
 }
