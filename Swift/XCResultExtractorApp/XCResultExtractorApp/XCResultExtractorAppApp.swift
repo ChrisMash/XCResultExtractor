@@ -10,12 +10,17 @@ import SwiftUI
 @main
 struct XCResultExtractorAppApp: App {
     
+    private let viewModel = ViewModel()
     private let fileDropDelegate = FileDropDelegate()
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     
+    init() {
+        fileDropDelegate.fileReceiver = viewModel
+    }
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(viewModel: viewModel)
                 .onDrop(of: [.fileURL],
                         delegate: fileDropDelegate)
         }
