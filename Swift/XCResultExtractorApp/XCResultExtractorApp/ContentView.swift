@@ -24,15 +24,18 @@ struct ContentView: View {
             // TODO: do an openFileDialog too?
             // TODO: how to load new xcresult?
         } else {
-            ScrollView {
-                VStack(alignment: .leading) {
-                    ForEach(viewModel.logs) {
-                        Text($0.filename)
-                            .bold()
-                        Divider()
-                        Text($0.content)
-                            .multilineTextAlignment(.leading)
-                        Divider()
+            TabView {
+                ForEach(viewModel.logs) { log in
+                    Tab(log.filename, // TODO: gets cut off? useful to give it a meaningful name anyway
+                        systemImage: "list.bullet.rectangle") {
+                        ScrollView {
+                            Text(log.content)
+                                .multilineTextAlignment(.leading)
+                                .textSelection(.enabled)
+                                .padding()
+                            // TODO: needs to fill full width
+                        }
+                        // TODO: button to get hold of the file (export or folder open)
                     }
                 }
             }
