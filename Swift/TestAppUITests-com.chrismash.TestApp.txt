@@ -1,0 +1,90 @@
+Standard output and standard error from com.chrismash.TestApp with process ID 21774 beginning at 2024-04-25 17:50:58 +0000
+
+App initialised
+ContentView initialised
+2024-04-25 18:51:03.553575+0100 TestApp[21774:5241363] [Default] Received request to exchange capabilities, remote interface capabilities are: <XCTCapabilities: 0x600000004840>: {
+    "query runtime issue reporting" = 1;
+    "query runtime issue reporting/automation type mismatch" = 1;
+}
+2024-04-25 18:51:03.561337+0100 TestApp[21774:5241363] [Default] Received request to notify when the main run loop is idle
+2024-04-25 18:51:03.561388+0100 TestApp[21774:5241363] [Default] Idle notifier finished setting up run loop observer
+2024-04-25 18:51:03.561542+0100 TestApp[21774:5241363] [Default] Received request to notify when animations are idle
+2024-04-25 18:51:03.561583+0100 TestApp[21774:5241363] [Default] Sending animations idle reply with error: (null)
+ContentView: @self changed.
+2024-04-25 18:51:05.666724+0100 TestApp[21774:5241143] [Default] Idle notifier run loop observer fired
+2024-04-25 18:51:05.666762+0100 TestApp[21774:5241143] [Default] Sending main run loop idle reply
+2024-04-25 18:51:07.796911+0100 TestApp[21774:5241360] [Default] Received request to fetch matches for query: ↪︎ Descendants matching type StaticText
+    ↪︎ Elements matching predicate '"Hello, world!" IN identifiers'
+2024-04-25 18:51:07.797086+0100 TestApp[21774:5241364] [Default] Evaluating query:
+ ↪︎ Descendants matching type StaticText
+    ↪︎ Elements matching predicate '"Hello, world!" IN identifiers'
+2024-04-25 18:51:07.797144+0100 TestApp[21774:5241364] [Default] Getting root element snapshot
+2024-04-25 18:51:07.797224+0100 TestApp[21774:5241364] [Default] Getting snapshot for App element pid: 21774 for query ↪︎ Descendants matching type StaticText
+    ↪︎ Elements matching predicate '"Hello, world!" IN identifiers'
+2024-04-25 18:51:07.797399+0100 TestApp[21774:5241364] [Default] Query requires iOS snapshot attributes XC_kAXXCAttributeElementBaseType, XC_kAXXCAttributeIdentifier, XC_kAXXCAttributeElementType, XC_kAXXCAttributeAutomationType, XC_kAXXCAttributeLabel, XC_kAXXCAttributeValue, XC_kAXXCAttributeTraits, XC_kAXXCAttributePlaceholderValue.
+2024-04-25 18:51:07.797771+0100 TestApp[21774:5241364] [Default] XCTPerformOnMainRunLoop[not MT]: about to CFRunLoopPerform
+2024-04-25 18:51:07.797827+0100 TestApp[21774:5241364] [Default] XCTPerformOnMainRunLoop[not MT]: waiting with 30.00s responsiveness timeout
+2024-04-25 18:51:07.797837+0100 TestApp[21774:5241143] [Default] XCTPerformOnMainRunLoop[MT]: inside CFRunLoopPerform
+2024-04-25 18:51:07.797869+0100 TestApp[21774:5241143] [Default] XCTPerformOnMainRunLoop[MT]: MT responded in time (won the race to the busy flag)
+2024-04-25 18:51:07.797904+0100 TestApp[21774:5241364] [Default] XCTPerformOnMainRunLoop[not MT]: waiting 60.00s for work to complete
+2024-04-25 18:51:07.825426+0100 TestApp[21774:5241143] [Default] Got main window <AXUIElementRef 0x600000cf06f0> {pid=21774} {uid=[ID:4 hash:0x101a24110]}
+2024-04-25 18:51:07.914979+0100 TestApp[21774:5241143] [Default] Capturing hierarchy with attributes XC_kAXXCAttributeElementBaseType, XC_kAXXCAttributeIdentifier, XC_kAXXCAttributeElementType, XC_kAXXCAttributeAutomationType, XC_kAXXCAttributeLabel, XC_kAXXCAttributeTraits, XC_kAXXCAttributeTruncatedValue, XC_kAXXCAttributeParent, XC_kAXXCAttributePlaceholderValue
+2024-04-25 18:51:07.915150+0100 TestApp[21774:5241143] [Default] Capturing hierarchy with parameters {
+    attributes =     (
+        5004,
+        5019,
+        5003,
+        5058,
+        2001,
+        2004,
+        2158,
+        5002,
+        5043
+    );
+    maxArrayCount = 2147483647;
+    maxChildren = 2147483647;
+    maxDepth = 2147483647;
+    snapshotKeyHonorModalViews = 0;
+    traverseFromParentsToChildren = 1;
+}
+2024-04-25 18:51:07.915199+0100 TestApp[21774:5241143] [Default] Snapshot attributes 5004, 5019, 5003, 5058, 2001, 2004, 2158, 5002, 5043
+2024-04-25 18:51:08.129832+0100 TestApp[21774:5241143] [Default] Got snapshot for <AXUIElementRef 0x600000ceeb50> {pid=21774} {uid=[ID:1 hash:0x0]}
+2024-04-25 18:51:08.129926+0100 TestApp[21774:5241143] [Default] Got app orientation 0
+2024-04-25 18:51:08.129950+0100 TestApp[21774:5241143] [Default] Captured accessibility snapshot data in 0.33s
+2024-04-25 18:51:08.130079+0100 TestApp[21774:5241364] [Default] Found main window: Window
+2024-04-25 18:51:08.130192+0100 TestApp[21774:5241364] [Default] XCTPerformOnMainRunLoop[not MT]: about to CFRunLoopPerform
+2024-04-25 18:51:08.130218+0100 TestApp[21774:5241364] [Default] XCTPerformOnMainRunLoop[not MT]: waiting with 30.00s responsiveness timeout
+2024-04-25 18:51:08.140063+0100 TestApp[21774:5241143] [Default] XCTPerformOnMainRunLoop[MT]: inside CFRunLoopPerform
+2024-04-25 18:51:08.140096+0100 TestApp[21774:5241143] [Default] XCTPerformOnMainRunLoop[MT]: MT responded in time (won the race to the busy flag)
+2024-04-25 18:51:08.140113+0100 TestApp[21774:5241364] [Default] XCTPerformOnMainRunLoop[not MT]: waiting 60.00s for work to complete
+2024-04-25 18:51:08.140129+0100 TestApp[21774:5241143] [Default] XCTElementQuery: set data source for rootElementSnapshot to <XCTAutomationSession: 0x6000026051a0>
+2024-04-25 18:51:08.140206+0100 TestApp[21774:5241364] [Default] Finding all matches with input Application, pid: 21774, label: 'TestApp' using transformers 
+↪︎ Descendants matching type StaticText
+    ↪︎ Elements matching predicate '"Hello, world!" IN identifiers'
+2024-04-25 18:51:08.140360+0100 TestApp[21774:5241364] [Default] [Match All] applied transformer `Descendants matching type StaticText` to input {(
+    Application, pid: 21774, label: 'TestApp'
+)}, found {(
+    StaticText, label: 'Hello, world!'
+)}
+2024-04-25 18:51:08.143754+0100 TestApp[21774:5241364] [Default] [Match All] applied transformer `Elements matching predicate '"Hello, world!" IN identifiers'` to input {(
+    StaticText, label: 'Hello, world!'
+)}, found {(
+    StaticText, label: 'Hello, world!'
+)}
+2024-04-25 18:51:08.143805+0100 TestApp[21774:5241364] [Default] [Match All] setting out related elements {(
+)}
+2024-04-25 18:51:08.143953+0100 TestApp[21774:5241364] [Default] Current tree:
+Application, 0x101c07190, pid: 21774, label: 'TestApp' <App element pid: 21774>
+  Window (Main), 0x101c3a3b0 <AX element pid: 21774, elementOrHash.elementID: 4322378000.4>
+    Other, 0x101c3a690 <AX element pid: 21774, elementOrHash.elementID: 4323517440.5>
+      Other, 0x101c201a0 <AX element pid: 21774, elementOrHash.elementID: 4321237264.6>
+        Other, 0x101c20870 <AX element pid: 21774, elementOrHash.elementID: 4337023488.7>
+          Other, 0x101c20bd0 <AX element pid: 21774, elementOrHash.elementID: 105553169804544.8>
+            Image, 0x101c20f30, label: 'Globe' <AX element pid: 21774, elementOrHash.elementID: 105553169762816.9>
+            StaticText, 0x101c212c0, label: 'Hello, world!' <AX element pid: 21774, elementOrHash.elementID: 105553169762656.10>
+2024-04-25 18:51:08.144002+0100 TestApp[21774:5241364] [Default] Query ↪︎ Descendants matching type StaticText
+    ↪︎ Elements matching predicate '"Hello, world!" IN identifiers' found matching snapshots: {(
+    StaticText, label: 'Hello, world!'
+)} (error: (null))
+2024-04-25 18:51:08.144133+0100 TestApp[21774:5241364] [Default] Replying to query ↪︎ Descendants matching type StaticText
+    ↪︎ Elements matching predicate '"Hello, world!" IN identifiers' with results: <XCTElementQueryResults: 0x600000cead30> (error: (null))

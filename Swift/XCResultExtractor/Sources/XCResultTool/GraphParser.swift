@@ -8,26 +8,30 @@
 import Foundation
 import RegexBuilder
 
-struct Log {
+public struct Log {
     let name: String
     let id: String
 }
 
-protocol GraphParserInterface {
+public protocol GraphParserInterface {
     func parseLogs(from graph: String) throws -> [Log]
 }
 
 // TODO: Session.log useful? just combination of the two?
-struct GraphParser: GraphParserInterface {
+public struct GraphParser: GraphParserInterface {
     
-    enum ParseError: Error {
+    public enum ParseError: Error {
         case logFilenameNotFound
         case noDirectoriesFound
     }
     
-    let logger: LoggerInterface
+    private let logger: LoggerInterface
     
-    func parseLogs(from graph: String) throws -> [Log] {
+    public init(logger: any LoggerInterface) {
+        self.logger = logger
+    }
+    
+    public func parseLogs(from graph: String) throws -> [Log] {
         // Example graph (partial):
         //
         //  + simctl_diagnostics (directory)

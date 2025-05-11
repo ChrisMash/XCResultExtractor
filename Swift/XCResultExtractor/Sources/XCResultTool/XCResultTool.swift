@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol XCResultToolInterface {
+public protocol XCResultToolInterface {
     
     func extractGraph(from path: String,
                       outputPath: URL?) throws -> String
@@ -18,20 +18,28 @@ protocol XCResultToolInterface {
     
 }
 
-struct XCResultTool: XCResultToolInterface {
+public struct XCResultTool: XCResultToolInterface {
     
-    let shell: ShellInterface
-    let fileHandler: FileHandlerInterface
-    let logger: LoggerInterface
-    
-    enum GraphExtractError: Error {
+    public enum GraphExtractError: Error {
         case xcResultToolError(Error)
         case noOutput
         case errorOutput(String)
     }
+    
+    private let shell: ShellInterface
+    private let fileHandler: FileHandlerInterface
+    private let logger: LoggerInterface
+    
+    public init(shell: any ShellInterface,
+                fileHandler: any FileHandlerInterface,
+                logger: any LoggerInterface) {
+        self.shell = shell
+        self.fileHandler = fileHandler
+        self.logger = logger
+    }
 
-    func extractGraph(from path: String,
-                      outputPath: URL? = nil) throws -> String {
+    public func extractGraph(from path: String,
+                             outputPath: URL? = nil) throws -> String {
         let graph: String
         do {
             graph = try shell.execute("xcrun xcresulttool graph --path \(path)/ --legacy")
@@ -65,15 +73,15 @@ struct XCResultTool: XCResultToolInterface {
         return graph
     }
     
-    enum LogExportError: Error {
+    public enum LogExportError: Error {
         case noLogsProvided
         case createOutputDirectoryFailed(Error)
     }
     
     // Note: failures to export are only logged, no errors thrown
-    func export(logs: [Log],
-                from xcResultPath: String,
-                to outputPathBase: String) throws {
+    public func export(logs: [Log],
+                       from xcResultPath: String,
+                       to outputPathBase: String) throws {
         guard !logs.isEmpty else {
             throw LogExportError.noLogsProvided
         }

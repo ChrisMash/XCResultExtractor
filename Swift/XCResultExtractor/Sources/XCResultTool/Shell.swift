@@ -7,20 +7,22 @@
 
 import Foundation
 
-protocol ShellInterface {
+public protocol ShellInterface {
     
     func execute(_ command: String) throws -> String
     
 }
 
-struct Shell: ShellInterface {
+public struct Shell: ShellInterface {
     
     enum ShellError: Error {
         case outputParseFailed
     }
     
+    public init() {}
+    
     // Based on https://stackoverflow.com/a/50035059/1751266
-    func execute(_ command: String) throws -> String {
+    public func execute(_ command: String) throws -> String {
         let task = Process()
         let pipe = Pipe()
         

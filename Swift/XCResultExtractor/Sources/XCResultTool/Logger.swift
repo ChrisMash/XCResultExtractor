@@ -5,15 +5,17 @@
 //  Created by Chris Mash on 30/10/2024.
 //
 
-protocol LoggerInterface {
+public protocol LoggerInterface {
     
     func log(_ message: String)
     
 }
 
-struct Logger: LoggerInterface {
+public struct Logger: LoggerInterface {
     
-    func log(_ message: String) {
+    public init() {}
+    
+    public func log(_ message: String) {
         print(message)
     }
     

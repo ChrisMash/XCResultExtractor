@@ -7,19 +7,31 @@
 
 import Foundation
 
-struct LogExtractor {
+public struct LogExtractor {
     
-    let xcResultTool: XCResultToolInterface
-    let shell: ShellInterface
-    let graphParser: GraphParserInterface
-    let fileHandler: FileHandlerInterface
-    let logger: LoggerInterface
-    
-    enum ExtractError: Error {
+    public enum ExtractError: Error {
         case createOutputDirectoryFailed(Error)
     }
     
-    func extractLogs(xcResultPath: String,
+    private let xcResultTool: XCResultToolInterface
+    private let shell: ShellInterface
+    private let graphParser: GraphParserInterface
+    private let fileHandler: FileHandlerInterface
+    private let logger: LoggerInterface
+    
+    public init(xcResultTool: any XCResultToolInterface,
+                shell: any ShellInterface,
+                graphParser: any GraphParserInterface,
+                fileHandler: any FileHandlerInterface,
+                logger: any LoggerInterface) {
+        self.xcResultTool = xcResultTool
+        self.shell = shell
+        self.graphParser = graphParser
+        self.fileHandler = fileHandler
+        self.logger = logger
+    }
+    
+    public func extractLogs(xcResultPath: String,
                      outputPath: String?) throws {
         logger.log("Generating .xcresult graph...")
         

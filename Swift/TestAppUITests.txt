@@ -1,0 +1,17 @@
+2024-04-25 18:50:44.436099+0100 TestAppUITests-Runner[21640:5238984] [Default] Running tests...
+    t =      nans Interface orientation changed to Portrait
+Test Suite 'TestAppUITests' started at 2024-04-25 18:50:53.439.
+Test Case '-[TestAppUITests.TestAppUITests testExample]' started.
+    t =     0.00s Start Test at 2024-04-25 18:50:53.441
+    t =     1.07s Set Up
+    t =     1.16s Open com.chrismash.TestApp
+    t =     1.16s     Launch com.chrismash.TestApp
+    t =     5.69s         Setting up automation session
+    t =    10.12s         Wait for com.chrismash.TestApp to idle
+    t =    13.30s Waiting 5.0s for "Hello, world!" StaticText to exist
+    t =    14.33s     Checking `Expect predicate `exists == 1` for object "Hello, world!" StaticText`
+    t =    14.34s         Checking existence of `"Hello, world!" StaticText`
+    t =    14.71s Tear Down
+Test Case '-[TestAppUITests.TestAppUITests testExample]' passed (15.088 seconds).
+Test Suite 'TestAppUITests' passed at 2024-04-25 18:51:08.529.
+	 Executed 1 test, with 0 failures (0 unexpected) in 15.088 (15.090) seconds

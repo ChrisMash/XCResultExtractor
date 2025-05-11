@@ -1,0 +1,3 @@
+
+- Typed throws?
+  - Would make higher level functions need to wrap lower level throws, which is a bit unnecessary? Not sure it really adds much benefit
