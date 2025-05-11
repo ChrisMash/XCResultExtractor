@@ -7,14 +7,22 @@
 
 import Foundation
 
-@Observable
-class ViewModel {
+struct LogInfo: Identifiable {
     
-    struct LogInfo: Identifiable {
-        let id = UUID()
-        let filename: String
-        let content: String
-    }
+    let id = UUID()
+    let filename: String
+    let content: String
+    
+}
+
+protocol ViewModelInterface {
+    
+    var logs: [LogInfo] { get }
+    
+}
+
+@Observable
+class ViewModel: ViewModelInterface {
     
     private(set) var logs: [LogInfo] = [] // TODO: can be modified externally?
     
