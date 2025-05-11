@@ -28,13 +28,24 @@ python3 xcresult_extractor.py --file ../TestApp.xcresult
 
 ### Swift
 
-This version is a bit more advanced. It extracts all the logs from the `.xcresult` without needing a bundle ID.
+The Swift version is a bit more advanced. It extracts all the logs from the `.xcresult` without needing a bundle ID, and it comes in two flavours:
 
-You can try it out in the `Swift/XCResultExtractor` folder by running:
+* CLI similar to the Python version
+* App that loads the logs for viewing and interacting
+
+There's even an `XCResultTool` package in `Swift/XCResultExtractor/Sources/XCResultTool` that provides the core logic for extracting logs from an `.xcresult`.
+
+#### CLI
+
+Try it out in the `Swift/XCResultExtractor` folder by running:
 
 ```shell
 swift run XCResultExtractor ../../TestApp.xcresult
 ```
+
+#### App
+
+Try it out by opening the project in `Swift/XCResultExtractorApp`
 
 ## Getting an `.xcresult`
 
