@@ -42,7 +42,7 @@ def parseArgs():
     return parser.parse_args()
 
 def fileIDOfAppOutput(xcresultFilename, targetFilename):
-    graphOutput = subprocess.Popen(f"xcrun xcresulttool graph --path {xcresultFilename}/ --legacy",
+    graphOutput = subprocess.Popen(f"xcrun xcresulttool graph --path '{xcresultFilename}/' --legacy",
                                    shell=True, 
                                    stdout=subprocess.PIPE).stdout.read().decode("utf-8")
     if len(graphOutput) == 0:
@@ -120,7 +120,7 @@ if __name__ == '__main__':
 
     print("Extracting console logs...")
     outputPath = "./output.txt"
-    cmdOutput = subprocess.Popen(f"xcrun xcresulttool export --type file --path {args.xcresultFilename}/ --output-path {outputPath} --id {fileID} --legacy", 
+    cmdOutput = subprocess.Popen(f"xcrun xcresulttool export --type file --path '{args.xcresultFilename}/' --output-path {outputPath} --id {fileID} --legacy", 
                                 shell=True, 
                                 stdout=subprocess.PIPE).stdout.read().decode("utf-8")
     if len(cmdOutput) == 0:
