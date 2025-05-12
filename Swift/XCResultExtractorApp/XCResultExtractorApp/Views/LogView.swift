@@ -13,23 +13,46 @@ struct LogView: View {
     
     var body: some View {
         ScrollView {
-            // TODO: show line numbers?
             // TODO: searchable (jump to specific lines, by regex?)
             // TODO: filterable (show/hide specific lines, by regex?)
-            Text(log.content)
-                .multilineTextAlignment(.leading)
-                .textSelection(.enabled)
-                .frame(maxWidth: .infinity,
-                       maxHeight: .infinity,
-                       alignment: .leading)
-                .padding()
+
+            VStack(alignment: .leading,
+                   spacing: 0) {
+                ForEach(lines) {
+                    LineView(line: $0)
+                }
+            }
+            .multilineTextAlignment(.leading)
+            .textSelection(.enabled) // TODO: only works within a line
+            .frame(maxWidth: .infinity,
+                   maxHeight: .infinity,
+                   alignment: .leading)
+            .padding()
         }
+    }
+    
+    // MARK: Private
+    private var lines: [Line] {
+        // TODO: probably want to do this once in VM eh?
+        log
+            .content
+            .components(separatedBy: "\n")
+            .enumerated()
+            .map {
+                Line(number: $0.0 + 1,
+                     content: $0.1)
+            }
     }
     
 }
 
 
-#Preview {
+#Preview("short") {
     LogView(log: LogInfo(filepath: URL(filePath: "filepath/not-valid.txt"),
                          content: "Some content"))
+}
+
+#Preview("long") {
+    LogView(log: LogInfo(filepath: URL(filePath: "filepath/not-valid.txt"),
+                         content: .loremIpsum))
 }
