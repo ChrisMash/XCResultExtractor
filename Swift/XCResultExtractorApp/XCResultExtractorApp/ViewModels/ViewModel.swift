@@ -156,8 +156,9 @@ extension ViewModel: FileDropDelegate.FileReceiver {
                     }
                 }
                 
+                print("\(logs.count) logs loaded")
+                print("\(errors.count) errors")
                 Task { @MainActor in
-                    print("VM: \(logs.count) logs loaded")
                     // TODO: what if one log failed and another didn't?
                     // could have a logs console or use the error as the log content?
                     if logs.isEmpty {

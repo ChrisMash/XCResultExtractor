@@ -9,28 +9,22 @@ import SwiftUI
 
 struct LogView: View {
     
-    let log: LogInfo
+    let content: String
     
     var body: some View {
-        ScrollView {
-            // TODO: show line numbers?
-            // TODO: searchable (jump to specific lines, by regex?)
-            // TODO: filterable (show/hide specific lines, by regex?)
-            TextEditor(text: .constant(log.content))
-                .lineLimit(nil)
-                .fixedSize(horizontal: false, vertical: true)
-                .multilineTextAlignment(.leading)
-                .padding()
-                .lineSpacing(4)
-        }
+        // TODO: show line numbers?
+        // TODO: searchable (jump to specific lines, by regex?)
+        // TODO: filterable (show/hide specific lines, by regex?)
+        BetterTextEditor(text: .constant(content),
+                         editable: false)
+            .padding()
     }
     
     // MARK: Private
     private var lines: [Line] {
         // TODO: keep this or nah?
         // TODO: probably want to do this once in VM eh?
-        log
-            .content
+        content
             .components(separatedBy: "\n")
             .enumerated()
             .map {
@@ -43,11 +37,9 @@ struct LogView: View {
 
 
 #Preview("short") {
-    LogView(log: LogInfo(filepath: URL(filePath: "filepath/not-valid.txt"),
-                         content: "Some content"))
+    LogView(content: "Some content")
 }
 
 #Preview("long") {
-    LogView(log: LogInfo(filepath: URL(filePath: "filepath/not-valid.txt"),
-                         content: .loremIpsum))
+    LogView(content: .loremIpsum)
 }

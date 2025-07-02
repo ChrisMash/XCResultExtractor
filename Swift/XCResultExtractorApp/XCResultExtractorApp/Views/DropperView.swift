@@ -23,7 +23,7 @@ struct DropperView: View {
                maxHeight: .infinity)
         .onDrop(of: [.fileURL],
                 delegate: delegate)
-        // TODO: do an openFileDialog too?
+        // todo: do an openFileDialog too?
     }
     
 }

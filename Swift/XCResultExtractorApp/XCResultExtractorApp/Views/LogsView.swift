@@ -12,19 +12,11 @@ struct LogsView: View {
     let viewModel: ViewModelInterface
     
     var body: some View {
-//        TabView {
-//            ForEach(viewModel.state.logs) { log in
-//                Tab(log.displayName,
-//                    systemImage: "list.bullet.rectangle") {
-//                    Text(verbatim: .loremIpsum)
-//                }
-//            }
-//        }
-        TabView { // TODO: changing tabs hella laggy & beachball for a bit when logs are large
+        TabView {
             ForEach(viewModel.state.logs) { log in
                 Tab(log.displayName, // TODO: give it a more meaningful name?
                     systemImage: "list.bullet.rectangle") {
-                    LogView(log: log)
+                    LogView(content: log.content)
                 }
             }
         }
