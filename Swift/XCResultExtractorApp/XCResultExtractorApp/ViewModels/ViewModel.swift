@@ -31,17 +31,25 @@ struct LogInfo: Identifiable {
 enum ViewModelState {
     
     case idle
+    case loading
     case logsLoaded([LogInfo])
     case error(Error)
     
-    var logs: [LogInfo]? {
+    var logs: [LogInfo] {
         switch self {
         case .logsLoaded(let logs):
             return logs
         default:
-            return nil
+            return []
         }
     }
+    
+    static let previewLogs: Self = .logsLoaded([
+        LogInfo(filepath: URL(filePath: "filepath/invalid/short_content_log_filename.ext"),
+                content: "Some single line log content"),
+        LogInfo(filepath: URL(filePath: "filepath/not-valid/long_content_log.ext"),
+                content: .loremIpsum)
+    ])
     
 }
 
@@ -64,11 +72,12 @@ class ViewModel: ViewModelInterface {
     }
     
     func revealLogsInFinder() {
-        guard let logs = state.logs else {
-            fatalError()
+        guard !state.logs.isEmpty else {
+            fatalError() // TODO: want to make sure we can't get here with no logs really
         }
         
-        logs[0]
+        state
+            .logs[0]
             .filepath
             .deletingLastPathComponent()
             .revealInFinder()
@@ -79,25 +88,35 @@ class ViewModel: ViewModelInterface {
 extension ViewModel: FileDropDelegate.FileReceiver {
     
     func received(files: [URL]) {
-        var logs: [LogInfo] = []
-        files.forEach {
-            do {
-                let content = try String(contentsOf: $0,
-                                         encoding: .utf8)
-                logs.append(LogInfo(filepath: $0,
-                                    content: content))
-            } catch {
-                print("ERROR: Failed to load \($0): \(error)") // TODO: show in UI?
-            }
-        }
+        print("VM: oading logs: \(files)")
+        state = .loading
         
-        Task { @MainActor in
-            state = .logsLoaded(logs)
+        Task {
+            var logs: [LogInfo] = []
+            files.forEach {
+                do {
+                    let content = try String(contentsOf: $0,
+                                             encoding: .utf8)
+                    logs.append(LogInfo(filepath: $0,
+                                        content: content))
+                } catch {
+                    print("ERROR: Failed to load \($0): \(error)") // TODO: show in UI
+                }
+            }
+            
+            // TODO: if zero logs then go to error state (with error describing any errors caught above
+            
+            Task { @MainActor in
+                print("VM: \(logs.count) logs loaded")
+                state = .logsLoaded(logs)
+                print("VM: state set to loaded")
+            }
         }
     }
     
     func received(error: FileDropDelegate.Error) {
         Task { @MainActor in
+            print("Log extraction failed: \(error)")
             state = .error(error)
         }
     }

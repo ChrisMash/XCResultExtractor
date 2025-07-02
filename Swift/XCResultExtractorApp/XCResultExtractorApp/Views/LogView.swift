@@ -13,26 +13,20 @@ struct LogView: View {
     
     var body: some View {
         ScrollView {
+            // TODO: show line numbers?
             // TODO: searchable (jump to specific lines, by regex?)
             // TODO: filterable (show/hide specific lines, by regex?)
-
-            VStack(alignment: .leading,
-                   spacing: 0) {
-                ForEach(lines) {
-                    LineView(line: $0)
-                }
-            }
-            .multilineTextAlignment(.leading)
-            .textSelection(.enabled) // TODO: only works within a line
-            .frame(maxWidth: .infinity,
-                   maxHeight: .infinity,
-                   alignment: .leading)
-            .padding()
+            TextEditor(text: .constant(log.content))
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
+                .multilineTextAlignment(.leading)
+                .padding()
         }
     }
     
     // MARK: Private
     private var lines: [Line] {
+        // TODO: keep this or nah?
         // TODO: probably want to do this once in VM eh?
         log
             .content

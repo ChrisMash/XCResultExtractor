@@ -26,6 +26,7 @@ class FileDropDelegate: DropDelegate {
     
     var fileReceiver: (any FileReceiver)?
     
+    // TODO: on drop there's a second or so of hang (because the VM state only updates after this bit)
     func performDrop(info: DropInfo) -> Bool {
         Task {
             guard let fileReceiver else {
@@ -56,7 +57,13 @@ class FileDropDelegate: DropDelegate {
                 }
                 
                 print("Loading \(url)")
-                // TODO: hand off to VM?
+                // TODO: hand off to VM? then could be used more generically
+                
+                // TODO: ensure it's an xcresult that's been dropped
+//                Loading file:///Users/chrismash/Documents/TestApp.xcresult.zip
+//                Generating .xcresult graph...
+//                ERROR: Failed to extract logs: errorOutput("Error: File or directory doesn\'t exist at path: /Users/chrismashm/Documents/TestApp.xcresult.zip/.\nUsage: xcresulttool <subcommand>\n  See \'xcresulttool --help\' for more information.\n")
+//                Log extraction failed: logExtractionFailed(XCResultTool.XCResultTool.GraphExtractError.errorOutput("Error: File or directory doesn\'t exist at path: /Users/chrismash/Documents/TestApp.xcresult.zip/.\nUsage: xcresulttool <subcommand>\n  See \'xcresulttool --help\' for more information.\n"))
                 
                 let shell = Shell()
                 let fileHandler = FileHandler()

@@ -20,19 +20,8 @@ struct XCResultExtractorAppApp: App {
     
     var body: some Scene {
         WindowGroup {
-            switch viewModel.state {
-            case .idle:
-                DropperView(delegate: fileDropDelegate)
-            case .logsLoaded(_):
-                ContentView(viewModel: viewModel)
-            case .error(let error):
-                VStack {
-                    DropperView(delegate: fileDropDelegate)
-                    
-                    ErrorView(error: error)
-                        .padding()
-                }
-            }
+            ContentView(viewModel: viewModel,
+                        dropDelegate: fileDropDelegate)
         }
     }
     

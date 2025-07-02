@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  XCResultExtractorApp
 //
-//  Created by Chris Mash on 11/05/2025.
+//  Created by Chris Mash on 02/07/2025.
 //
 
 import SwiftUI
@@ -10,54 +10,49 @@ import SwiftUI
 struct ContentView: View {
     
     let viewModel: ViewModelInterface
+    let dropDelegate: DropDelegate
     
     var body: some View {
-        TabView { // TODO: a bit laggy changing tabs, may be very laggy with 100k logs?
-            ForEach(viewModel.state.logs ?? []) { log in
-                Tab(log.displayName, // TODO: give it a more meaningful name?
-                    systemImage: "list.bullet.rectangle") {
-                    LogView(log: log)
-                }
+        switch viewModel.state {
+        case .idle:
+            DropperView(delegate: dropDelegate)
+        case .loading:
+            VStack {
+                ProgressView() // TODO: provide progress feedback (progress incremented per log perhaps)
+                Text("Loading...")
             }
-        }
-        .toolbar {
-            Menu {
-                Button(action: viewModel.revealLogsInFinder) {
-                    Text("Reveal logs in finder")
-                }
+            // TODO: not picking up transition from loading to loaded, beachballing
+        case .logsLoaded(_):
+            LogsView(viewModel: viewModel) // TODO: perhaps doesn't need whole viewModel, just logs..?
+        case .error(let error):
+            VStack {
+                DropperView(delegate: dropDelegate)
                 
-                Button(action: viewModel.closeLogs) {
-                    Text("Close logs")
-                }
-            } label: {
-                Image(systemName: "list.bullet.circle.fill")
+                ErrorView(error: error)
+                    .padding()
             }
         }
     }
     
 }
 
-#Preview {
-    ContentView(viewModel: MockViewModel())
+#Preview("idle") {
+    ContentView(viewModel: MockViewModel(state: .idle),
+                dropDelegate: MockDropDelegate())
 }
 
-class MockViewModel: ViewModelInterface {
-    
-    private(set) var state: ViewModelState = .idle
-    
-    init() {
-        state = .logsLoaded([
-            LogInfo(filepath: URL(filePath: "filepath/invalid/short_content_log_filename.ext"),
-                    content: "Some single line log content"),
-            LogInfo(filepath: URL(filePath: "filepath/not-valid/long_content_log.ext"),
-                    content: .loremIpsum)
-        ])
-    }
-    
-    func closeLogs() {
-        state = .idle
-    }
-    
-    func revealLogsInFinder() {}
-    
+#Preview("loading") {
+    ContentView(viewModel: MockViewModel(state: .loading),
+                dropDelegate: MockDropDelegate())
+}
+
+#Preview("logs") {
+    ContentView(viewModel: MockViewModel(state: .previewLogs),
+                dropDelegate: MockDropDelegate())
+}
+
+#Preview("error") {
+    ContentView(viewModel: MockViewModel(state: .error(NSError(domain: "PRVW",
+                                                               code: 0))),
+                dropDelegate: MockDropDelegate())
 }
