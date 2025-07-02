@@ -11,17 +11,28 @@ struct LogsView: View {
     
     let viewModel: ViewModelInterface
     
+    @State private var hideNonsense = false
+    
     var body: some View {
         TabView {
             ForEach(viewModel.state.logs) { log in
                 Tab(log.displayName, // TODO: give it a more meaningful name?
                     systemImage: "list.bullet.rectangle") {
-                    LogView(content: log.content)
+                    LogView(content: log
+                                        .content
+                                        .hidingNonsense(hideNonsense))
                 }
             }
         }
+        .padding(8)
         .toolbar {
             Menu {
+                // TODO: toggle isn't updating the rendered content
+                Toggle("Hide nonsense",
+                       isOn: $hideNonsense) // TODO: not that nice UX with it in the menu, hard to tell what it's doing
+                
+                Divider()
+                
                 Button(action: viewModel.revealLogsInFinder) {
                     Text("Reveal logs in finder")
                 }

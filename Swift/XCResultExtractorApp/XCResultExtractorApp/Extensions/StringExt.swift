@@ -31,4 +31,17 @@ extension String {
         """
     }
     
+    func hidingNonsense(_ hideNonsense: Bool) -> String {
+        if !hideNonsense {
+            return self
+        } else {
+            var trimmed = self
+            let ranges = trimmed.ranges(of: "    t =     .*\\n")
+            for range in ranges.reversed() {
+                trimmed.removeSubrange(range)
+            }
+            return trimmed
+        }
+    }
+    
 }

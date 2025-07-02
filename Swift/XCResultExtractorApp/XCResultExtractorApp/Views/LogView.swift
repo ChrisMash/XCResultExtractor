@@ -17,7 +17,6 @@ struct LogView: View {
         // TODO: filterable (show/hide specific lines, by regex?)
         BetterTextEditor(text: .constant(content),
                          editable: false)
-            .padding()
     }
     
     // MARK: Private
