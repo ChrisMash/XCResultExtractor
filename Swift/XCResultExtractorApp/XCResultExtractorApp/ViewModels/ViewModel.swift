@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import XCResultTool
 
 struct LogInfo: Identifiable {
     
@@ -66,7 +67,9 @@ protocol ViewModelInterface {
 class ViewModel: ViewModelInterface {
     
     enum LogsError: Error {
+        case notXCResult(URL)
         case noLogs(String)
+        case logExtractionFailed(Error)
     }
     
     private(set) var state: ViewModelState = .idle
@@ -91,43 +94,92 @@ class ViewModel: ViewModelInterface {
 
 extension ViewModel: FileDropDelegate.FileReceiver {
     
-    func received(files: [URL]) {
-        print("VM: oading logs: \(files)")
+    func received(url: URL) {
+        guard Thread.isMainThread else { fatalError() }
+        
+        guard url.lastPathComponent.hasSuffix(".xcresult") else {
+            state = .error(LogsError.notXCResult(url))
+            return
+        }
+        
+        print("loading: \(url)")
         state = .loading
         
         Task {
-            var logs: [LogInfo] = []
-            var errors: [String] = []
-            files.forEach {
-                do {
-                    let content = try String(contentsOf: $0,
-                                             encoding: .utf8)
-                    logs.append(LogInfo(filepath: $0,
-                                        content: content))
-                } catch {
-                    print("ERROR: Failed to load \($0): \(error)")
-                    errors.append("Failed to load \($0): \(error)")
-                }
-            }
+            let shell = Shell()
+            let fileHandler = FileHandler()
+            let logger = Logger()
+            let extractor = LogExtractor(xcResultTool: XCResultTool(shell: shell,
+                                                                    fileHandler: fileHandler,
+                                                                    logger: logger),
+                                         shell: shell,
+                                         graphParser: GraphParser(logger: logger),
+                                         fileHandler: fileHandler,
+                                         logger: logger)
+            let outputPath = URL.temporaryDirectory.appendingPathComponent("export",
+                                                                           conformingTo: .fileURL)
+            // TODO: clear outputPath before exporting?
             
-            Task { @MainActor in
-                print("VM: \(logs.count) logs loaded")
-                // TODO: what if one log failed and another didn't?
-                // could have a logs console or use the error as the log content?
-                if logs.isEmpty {
-                    state = .error(LogsError.noLogs(errors.joined(separator: "\n")))
-                } else {
-                    state = .logsLoaded(logs)
+            do {
+                try extractor.extractLogs(xcResultPath: url.path(),
+                                          outputPath: outputPath.path()) // todo: get this to return the log paths. could be more things in there
+                
+                guard let enumerator = FileManager.default.enumerator(atPath: outputPath.path()) else {
+                    print("ERROR: Failed to enumerate directory \(outputPath)")
+                    return
+                }
+                
+                var files: [URL] = []
+                enumerator.forEach {
+                    guard let filename = $0 as? String else {
+                        print("ERROR: unexpected filename type: \($0)")
+                        return
+                    }
+                    
+                    if filename != "graph.txt" {
+                        files.append(outputPath.appendingPathComponent(filename,
+                                                                       conformingTo: .fileURL))
+                    }
+                }
+                
+                var logs: [LogInfo] = []
+                var errors: [String] = []
+                files.forEach {
+                    do {
+                        let content = try String(contentsOf: $0,
+                                                 encoding: .utf8)
+                        logs.append(LogInfo(filepath: $0,
+                                            content: content))
+                    } catch {
+                        print("ERROR: Failed to load \($0): \(error)")
+                        errors.append("Failed to load \($0): \(error)")
+                    }
+                }
+                
+                Task { @MainActor in
+                    print("VM: \(logs.count) logs loaded")
+                    // TODO: what if one log failed and another didn't?
+                    // could have a logs console or use the error as the log content?
+                    if logs.isEmpty {
+                        state = .error(LogsError.noLogs(errors.joined(separator: "\n")))
+                    } else {
+                        state = .logsLoaded(logs)
+                    }
+                }
+            } catch {
+                print("ERROR: Failed to extract logs: \(error)")
+                Task { @MainActor in
+                    state = .error(LogsError.logExtractionFailed(error))
                 }
             }
         }
     }
     
-    func received(error: FileDropDelegate.Error) {
-        Task { @MainActor in
-            print("Log extraction failed: \(error)")
-            state = .error(error)
-        }
+    func received(error: FileDropDelegate.FileError) {
+        guard Thread.isMainThread else { fatalError() }
+        
+        print("Log extraction failed: \(error)")
+        state = .error(error)
     }
     
 }

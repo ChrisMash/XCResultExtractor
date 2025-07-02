@@ -21,6 +21,7 @@ struct LogView: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .multilineTextAlignment(.leading)
                 .padding()
+                .lineSpacing(4)
         }
     }
     

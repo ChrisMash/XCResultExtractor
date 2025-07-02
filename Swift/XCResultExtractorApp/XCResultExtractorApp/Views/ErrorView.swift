@@ -20,6 +20,8 @@ struct ErrorView: View {
 }
 
 #Preview {
-    ErrorView(error: FileDropDelegate.Error.itemLoadFailed(NSError(domain: "Domain",
-                                                                   code: 0)))
+    ErrorView(error: FileDropDelegate
+                        .FileError
+                        .itemLoadFailed(NSError(domain: "Domain",
+                                                code: 0)))
 }

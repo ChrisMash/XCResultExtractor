@@ -20,7 +20,7 @@ struct LogsView: View {
 //                }
 //            }
 //        }
-        TabView { // TODO: a bit laggy changing tabs, may be very laggy with 100k logs?
+        TabView { // TODO: changing tabs hella laggy & beachball for a bit when logs are large
             ForEach(viewModel.state.logs) { log in
                 Tab(log.displayName, // TODO: give it a more meaningful name?
                     systemImage: "list.bullet.rectangle") {
