@@ -65,6 +65,10 @@ protocol ViewModelInterface {
 @Observable
 class ViewModel: ViewModelInterface {
     
+    enum LogsError: Error {
+        case noLogs(String)
+    }
+    
     private(set) var state: ViewModelState = .idle
     
     func closeLogs() {
@@ -93,6 +97,7 @@ extension ViewModel: FileDropDelegate.FileReceiver {
         
         Task {
             var logs: [LogInfo] = []
+            var errors: [String] = []
             files.forEach {
                 do {
                     let content = try String(contentsOf: $0,
@@ -100,16 +105,20 @@ extension ViewModel: FileDropDelegate.FileReceiver {
                     logs.append(LogInfo(filepath: $0,
                                         content: content))
                 } catch {
-                    print("ERROR: Failed to load \($0): \(error)") // TODO: show in UI
+                    print("ERROR: Failed to load \($0): \(error)")
+                    errors.append("Failed to load \($0): \(error)")
                 }
             }
             
-            // TODO: if zero logs then go to error state (with error describing any errors caught above
-            
             Task { @MainActor in
                 print("VM: \(logs.count) logs loaded")
-                state = .logsLoaded(logs)
-                print("VM: state set to loaded")
+                // TODO: what if one log failed and another didn't?
+                // could have a logs console or use the error as the log content?
+                if logs.isEmpty {
+                    state = .error(LogsError.noLogs(errors.joined(separator: "\n")))
+                } else {
+                    state = .logsLoaded(logs)
+                }
             }
         }
     }

@@ -21,9 +21,8 @@ struct ContentView: View {
                 ProgressView() // TODO: provide progress feedback (progress incremented per log perhaps)
                 Text("Loading...")
             }
-            // TODO: not picking up transition from loading to loaded, beachballing
         case .logsLoaded(_):
-            LogsView(viewModel: viewModel) // TODO: perhaps doesn't need whole viewModel, just logs..?
+            LogsView(viewModel: viewModel)
         case .error(let error):
             VStack {
                 DropperView(delegate: dropDelegate)
