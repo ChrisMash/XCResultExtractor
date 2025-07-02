@@ -21,13 +21,12 @@ struct LogsView: View {
 //            }
 //        }
         TabView { // TODO: a bit laggy changing tabs, may be very laggy with 100k logs?
-            let log = viewModel.state.logs.first!
-            //ForEach(viewModel.state.logs) { log in
+            ForEach(viewModel.state.logs) { log in
                 Tab(log.displayName, // TODO: give it a more meaningful name?
                     systemImage: "list.bullet.rectangle") {
                     LogView(log: log)
                 }
-            //}
+            }
         }
         .toolbar {
             Menu {
@@ -51,6 +50,6 @@ struct LogsView: View {
 }
 
 #Preview("0 logs") {
-    // TODO: would want to show an error and back to dropped.. or just never get to this view
+    // TODO: would want to show an error and back to dropper.. or just never get to this view
     LogsView(viewModel: MockViewModel(state: .logsLoaded([])))
 }
