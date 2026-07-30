@@ -24,10 +24,9 @@ python3 xcresult_extractor.py --file YourTestApp.xcresult
 
 There's an example `.xcresult` in this repo (generated from the test app in the repo) that you can try the script with, or if you want to get your own from Xcode:
 
-* Run your UI tests
-* Select the Product -> Show build folder in finder menu option
-* Navigate to Logs/Tests/ and you should see your `.xcresult` file(s) there
-
+* Go to the Report Navigator in Xcode
+* Right click on the test run (the product name, not the "Tests" row in the list below it)
+* Select "Show in Finder"
 
 ## Swift version
 
